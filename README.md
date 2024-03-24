@@ -1,4 +1,4 @@
-# DBCLS Backup System: Namazu (仮)
+# DBCLS Backup System: Zuke (仮)
 
 ## 概要
 
@@ -9,3 +9,20 @@
   - -> GUI として、バックアップポリシー管理 app を実装する
 - 更に、設定されたポリシー (実体としては Json) を元に、実際の backup 処理を行う script を実装する
   - cron などで定期的に実行する
+
+## Components
+
+- `zuke-gui`
+  - バックアップポリシー管理 app
+  - script でさらってきた、file/dir のリストを展開して、User がそれぞれの file/dir に対してバックアップポリシーを設定する
+    - この際、コスト感などを意識しつつ、設定できるようにする
+  - SPA として実装する
+  - 情報の永続化、User 間の情報共有を考慮すると、backend が必要
+    - ただ、この app 用のインフラを管理するコストとのトレードオフになる
+    - TODO: discussion
+- `zuke-cli`
+  - `zuke-gui` で設定されたポリシーを元に、実際の backup 処理を行う cli
+  - cron などで定期的に実行する
+    - cron の設定や、cli の command などは、`gui` の方で生成できるようにしておく
+  - single binary として動作することが望ましい
+    - -> Rust?
