@@ -1,16 +1,28 @@
-import { Box } from "@mui/material"
+import { Box, Container, Divider } from "@mui/material"
+
+import AppFooter from "@/components/AppFooter"
+import AppHeader from "@/components/AppHeader"
+import FileListSec from "@/components/FileListSec"
+import IntroSec from "@/components/IntroSec"
+import PolicySec from "@/components/PolicySec"
+import ServerSettingSec from "@/components/ServerSettingSec"
 
 export default function Home() {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Box sx={{ flexGrow: 1 }}>
-        <Box sx={{ margin: "3rem 0 0 3rem" }}>
-          <h1>Home 画面</h1>
-          <ul>
-            TODO: 実装
-          </ul>
-        </Box>
+        <AppHeader />
+        <Container maxWidth="lg">
+          <IntroSec sx={{ margin: "3rem 0 1.5rem" }} />
+          <Divider />
+          <FileListSec sx={{ margin: "1.5rem 0" }} />
+          <Divider />
+          <PolicySec sx={{ margin: "1.5rem 0" }} />
+          <Divider />
+          <ServerSettingSec sx={{ margin: "1.5rem 0" }} />
+        </Container>
       </Box>
-    </Box>
+      <AppFooter />
+    </Box >
   )
 }
