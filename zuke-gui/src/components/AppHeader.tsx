@@ -1,4 +1,5 @@
-import { Box, AppBar, Typography, SxProps, Button } from "@mui/material"
+import { Box, AppBar, Typography, Button } from "@mui/material"
+import { SxProps } from "@mui/system"
 
 interface AppHeaderProps {
   sx?: SxProps
