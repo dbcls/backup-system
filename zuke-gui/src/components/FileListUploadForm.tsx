@@ -38,7 +38,7 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
       setUploadError("ファイルの読み込みが中断されました。")
     }
     reader.readAsText(file)
-  }, [])
+  }, [setUploadedFileList])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   return (

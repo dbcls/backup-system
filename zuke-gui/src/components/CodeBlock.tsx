@@ -23,7 +23,10 @@ export default function CodeBlock({ sx, codeString, language }: CodeBlockProps) 
     })
   }
 
-  const headCodeString = `${codeString.split("\n").slice(0, 10).join("\n")}\n... 省略 (右上の icon で展開) ...\n`
+  const codeLines = codeString.split("\n")
+  const headCodeString = codeLines.length <= 10 ?
+    codeString :
+    `${codeLines.slice(0, 10).join("\n")}\n... 省略 (右上の icon で展開) ...`
 
   return (
     <Card sx={{ ...sx, position: "relative" }} variant="outlined">

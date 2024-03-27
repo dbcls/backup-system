@@ -1,0 +1,36 @@
+[
+  {
+    "path": "/path/to/backup_dir",
+    "size": 4921757,
+    "type": "directory",
+    "children": [
+      {
+        "path": "/path/to/backup_dir/file_a",
+        "size": 32768,
+        "type": "file"
+      },
+      {
+        "path": "/path/to/backup_dir/file_b",
+        "size": 4762013,
+        "type": "file"
+      },
+      {
+        "path": "/path/to/backup_dir/subdir",
+        "size": 126976,
+        "type": "directory",
+        "children": [
+          {
+            "path": "/path/to/backup_dir/subdir/file_c",
+            "size": 32768,
+            "type": "file"
+          },
+          {
+            "path": "/path/to/backup_dir/subdir/file_d",
+            "size": 94208,
+            "type": "file"
+          }
+        ]
+      }
+    ]
+  }
+]
