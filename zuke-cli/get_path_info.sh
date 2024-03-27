@@ -1,14 +1,3 @@
-import { Box } from "@mui/material"
-import { SxProps } from "@mui/system"
-
-import CodeBlock from "@/components/CodeBlock"
-import SecHeader from "@/components/SecHeader"
-
-interface FileListSecProps {
-  sx?: SxProps
-}
-
-const content = `
 #!/bin/bash
 
 # Usage: ./get_path_info.sh -d <depth> <file_path | dir_path>
@@ -60,14 +49,3 @@ else
     echo "The specified path: $argPath is not a directory or file."
     exit 1
 fi
-`
-
-export default function FileListSec(props: FileListSecProps) {
-  return (
-    <Box sx={{ ...props.sx }}>
-      <SecHeader title="1. File List の読み込み" />
-      <CodeBlock codeString={content} language="bash" />
-
-    </Box>
-  )
-}
