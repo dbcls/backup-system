@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: ./get_path_info.sh -d <depth> <file_path | dir_path>
+# Usage: ./get_file_list.sh -d <depth> <file_path | dir_path>
 
 set -u
 
