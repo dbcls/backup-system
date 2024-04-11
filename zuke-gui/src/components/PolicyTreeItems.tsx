@@ -1,69 +1,89 @@
-import { Box, ToggleButton, ToggleButtonGroup, Divider } from "@mui/material"
-import { TreeItem, treeItemClasses } from "@mui/x-tree-view/TreeItem"
+import { FolderOpenOutlined } from "@mui/icons-material"
+import { Box, Typography, ToggleButtonGroup, ToggleButton } from "@mui/material"
+import { alpha } from "@mui/system"
+import { TreeItem } from "@mui/x-tree-view/TreeItem"
+import { useRecoilState } from "recoil"
 
+import { backupPolicyListAtom } from "@/store"
 import { FileSystemObject } from "@/types"
+import { humanReadableSize, pathBasename, updatePolicyList } from "@/utils"
 
 interface PolicyTreeItemProps {
   items: FileSystemObject[]
 }
 
-const humanReadableSize = (size: number) => {
-  if (size === 0) return "0.00 B"
-  const i = Math.floor(Math.log(size) / Math.log(1024))
-  return `${(size / Math.pow(1024, i)).toFixed(2)} ${["B", "KB", "MB", "GB", "TB", "PB"][i]}`
-}
+const policyList = [
+  "PolicyA",
+  "PolicyB",
+  "PolicyC",
+]
 
 export default function PolicyTreeItems({ items }: PolicyTreeItemProps) {
+  const [backupPolicyList, setBackupPolicyList] = useRecoilState(backupPolicyListAtom)
+
+  const handleChangePolicy = (itemPath: string, policy: string) => {
+    const newBackupPolicyList = updatePolicyList(backupPolicyList, itemPath, policy)
+    setBackupPolicyList(newBackupPolicyList)
+  }
+
   return (
     <>
       {items.map((item) => (
         <TreeItem
           itemId={item.path}
           key={item.path}
-          label={<Box>
-            <Box sx={{
-              display: "inline-flex", alignItems: "center", border: "1px solid", borderColor: "divider", borderRadius: 2,
-              marginRight: "1rem",
-            }} >
-              <Box sx={{ margin: "0.2rem 0.4rem" }}>Policy1</Box>
-              <Divider orientation="vertical" flexItem />
-              <Box sx={{ margin: "0.2rem 0.4rem" }}>Policy2</Box>
-              <Divider orientation="vertical" flexItem />
-              <Box sx={{ margin: "0.2rem 0.4rem" }}>Policy3</Box>
+          sx={{
+            ["& .Mui-focused"]: {
+              backgroundColor: "#fff",
+              "&:hover": {
+                backgroundColor: alpha("#000000", 0.04),
+              },
+            },
+          }}
+          label={
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              {item.type === "directory" && <FolderOpenOutlined sx={{ mr: "0.5rem" }} />}
+              <Typography
+                children={item.root === true ? item.path : pathBasename(item.path)}
+                sx={{ fontWeight: item.type === "directory" ? "bold" : "normal" }}
+              />
+              <Typography
+                children={`(${humanReadableSize(item.size)})`}
+                sx={{ ml: "0.5rem", fontSize: "0.8rem", fontWeight: "light" }}
+              />
+              <ToggleButtonGroup
+                color="secondary"
+                size="small"
+                value={item.policy}
+                sx={{
+                  ml: "auto",
+                  mr: "1.5rem",
+                }}
+              >
+                {policyList.map((policy) => (
+                  <ToggleButton
+                    key={policy}
+                    value={policy}
+                    sx={{
+                      fontSize: "0.8rem",
+                      borderRadius: "12px",
+                      padding: "0.1rem 0.4rem",
+                      textTransform: "none",
+                    }}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      handleChangePolicy(item.path, policy)
+                    }}
+                    children={policy}
+                  />
+                ))}
+              </ToggleButtonGroup>
             </Box>
-            {item.type === "file" ? item.path : <strong>{item.path}</strong>}
-            {item.size ? ` (${humanReadableSize(item.size)})` : null}
-          </Box>}
-          // sx={{
-          //   position: "relative",
-          //   [`& .${treeItemClasses.content}`]: {
-          //     flexDirection: "row-reverse",
-          //     marginTop: "0.5rem",
-          //     marginBottom: "0.5rem",
-          //     padding: "0.5rem",
-          //     paddingRight: "1rem",
-          //     // ["&.Mui-expanded "]: {
-          //     //   "&::before": {
-          //     //     content: "\"\"",
-          //     //     display: "block",
-          //     //     position: "absolute",
-          //     //     left: "16px",
-          //     //     top: "44px",
-          //     //     height: "calc(100% - 48px)",
-          //     //     width: "1.5px",
-          //     //     backgroundColor: "#888",
-          //     //   },
-          //     // },
-          //   },
-          //   [`& .${treeItemClasses.groupTransition}`]: {
-          //     marginLeft: 15,
-          //     // paddingLeft: 18,
-          //     borderLeft: "1.5px solid #9E9E9E",
-          //   },
-          // }}
+          }
           children={
             item.children ? <PolicyTreeItems items={item.children} /> : null
-          } />
+          }
+        />
       ))}
     </>
   )

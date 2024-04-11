@@ -3,4 +3,6 @@ export interface FileSystemObject {
   size: number
   type: "file" | "directory"
   children?: FileSystemObject[]
+  root?: boolean
+  policy?: string
 }
