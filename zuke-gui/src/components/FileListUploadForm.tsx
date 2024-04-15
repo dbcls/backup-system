@@ -5,7 +5,9 @@ import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { useSetRecoilState } from "recoil"
 
-import { uploadedFileListAtom } from "@/store"
+import { uploadedFileListAtom, backupPolicyAtom } from "@/store"
+import { FileSystemObj } from "@/types"
+import { parseJsonLines, initPolicyTree } from "@/utils"
 
 interface FileListUploadFromProps {
   sx?: SxProps
@@ -14,6 +16,7 @@ interface FileListUploadFromProps {
 export default function FileListUploadFrom(props: FileListUploadFromProps) {
   const [uploadError, setUploadError] = useState<string | null>(null)
   const setUploadedFileList = useSetRecoilState(uploadedFileListAtom)
+  const setBackupPolicy = useSetRecoilState(backupPolicyAtom)
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setUploadError(null)
@@ -27,9 +30,12 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
     const file = acceptedFiles[0]
     const reader = new FileReader()
     reader.onload = () => {
-      const text = reader.result
+      const text = reader.result as string
+      setUploadedFileList(text)
       // TODO: 型で validation する
-      setUploadedFileList(text as string)
+      const fileSystemObjs = parseJsonLines(text) as FileSystemObj[]
+      const backupPolicy = initPolicyTree(fileSystemObjs)
+      setBackupPolicy(backupPolicy)
     }
     reader.onerror = () => {
       setUploadError("ファイルの読み込みに失敗しました。")
@@ -38,7 +44,7 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
       setUploadError("ファイルの読み込みが中断されました。")
     }
     reader.readAsText(file)
-  }, [setUploadedFileList])
+  }, [setUploadedFileList, setBackupPolicy])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   return (

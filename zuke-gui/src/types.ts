@@ -1,8 +1,12 @@
-export interface FileSystemObject {
+export interface FileSystemObj {
   path: string
   size: number
   type: "file" | "directory"
-  children?: FileSystemObject[]
-  root?: boolean
-  policy?: string
 }
+
+export interface PolicyObj extends FileSystemObj {
+  children?: PolicyObj[]
+  policy: string
+}
+
+export type BackupPolicy = PolicyObj[]

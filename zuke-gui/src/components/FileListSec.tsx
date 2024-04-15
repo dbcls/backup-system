@@ -17,7 +17,7 @@ export default function FileListSec(props: FileListSecProps) {
     <Box sx={{ ...props.sx }}>
       <SecHeader title="1. File List の読み込み" />
       <Box sx={{ margin: "1.5rem" }}>
-        <Typography variant="body1">
+        <Typography variant="body1" component="div">
           まず、下の Script (<OpenInNewLink text="get_file_list.sh" href={getFileListUrl} />) を Server 上で実行し、
         </Typography>
         <CodeBlock codeString={getFileListScript} language="bash" sx={{ margin: "1.5rem 0" }} />

@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# TODO: JSON で吐けるようにする
-
-# Usage: ./get_file_list.sh -d <depth> <file_path | dir_path>
+# Usage: ./get_file_list.sh -d <depth> <file_path | dir_path> > output.jsonl
 
 set -u
 
+# Argument parsing
 depth=2
 
-while getopts d: opt; do
-    case $opt in
+while getopts d: OPT; do
+    case $OPT in
     d) depth=$OPTARG ;;
     \?)
         echo "Usage: $0 [-d depth] <file_path | dir_path>"
@@ -17,6 +16,7 @@ while getopts d: opt; do
         ;;
     esac
 done
+
 shift $((OPTIND - 1))
 
 if [[ $# -ne 1 ]]; then
@@ -26,28 +26,16 @@ fi
 
 argPath=$1
 
-# argPath 以下に find や du して Permission Denied が出ないか確認
-
-if ! find "$argPath" -type f >/dev/null 2>&1; then
+# argPath 以下に find して Permission Denied が出ないか確認
+if ! find "$argPath" -maxdepth "$depth" >/dev/null 2>&1; then
     echo "Permission Denied error detected. Please change the permission or exec as root."
     exit 1
 fi
 
-# ホスト名、OS、ファイルサイズを取得
-hostName=$(hostname)
-os=$(lsb_release -d | cut -f2)
-
-echo -e "\n=== 下の行を spreadsheet 最初のセルにコピペ (Command + Shift + V) してください ===\n"
-
-if [ -d "$argPath" ]; then
-    find "$argPath" -maxdepth $depth -type d | while read -r dirPath; do
-        size=$(du -sh "$dirPath" | cut -f1)
-        echo -e "$hostName\t$(realpath $dirPath)\t$os\t$size"
-    done
-elif [ -f "$argPath" ]; then
-    size=$(du -sh "$argPath" | cut -f1)
-    echo -e "$hostName\t$(realpath $argPath)\t$os\t$size"
-else
-    echo "The specified path: $argPath is not a directory or file."
-    exit 1
-fi
+# path, size, type を JSON lines 形式で出力
+find "$argPath" -maxdepth "$depth" | while read -r path; do
+    realPath=$(realpath "$path")
+    size=$(du --bytes --summarize "$realPath" | cut -f1)
+    type=$([[ -d "$realPath" ]] && echo "directory" || echo "file")
+    printf '{"path": "%s", "size": %d, "type": "%s"}\n' "$realPath" "$size" "$type"
+done

@@ -1,29 +1,24 @@
 import { FolderOpenOutlined } from "@mui/icons-material"
 import { Box, Typography, ToggleButtonGroup, ToggleButton } from "@mui/material"
-import { alpha } from "@mui/system"
 import { TreeItem } from "@mui/x-tree-view/TreeItem"
 import { useRecoilState } from "recoil"
 
-import { backupPolicyListAtom } from "@/store"
-import { FileSystemObject } from "@/types"
-import { humanReadableSize, pathBasename, updatePolicyList } from "@/utils"
+import { backupPolicyAtom } from "@/store"
+import { BackupPolicy } from "@/types"
+import { humanReadableSize, pathBasename, updatePolicy } from "@/utils"
+import { defaultPolicyList } from "@/utils"
 
 interface PolicyTreeItemProps {
-  items: FileSystemObject[]
+  items: BackupPolicy
+  isRoot: boolean
 }
 
-const policyList = [
-  "PolicyA",
-  "PolicyB",
-  "PolicyC",
-]
-
-export default function PolicyTreeItems({ items }: PolicyTreeItemProps) {
-  const [backupPolicyList, setBackupPolicyList] = useRecoilState(backupPolicyListAtom)
+export default function PolicyTreeItems({ items, isRoot }: PolicyTreeItemProps) {
+  const [backupPolicy, setBackupPolicy] = useRecoilState(backupPolicyAtom)
 
   const handleChangePolicy = (itemPath: string, policy: string) => {
-    const newBackupPolicyList = updatePolicyList(backupPolicyList, itemPath, policy)
-    setBackupPolicyList(newBackupPolicyList)
+    const newBackupPolicy = updatePolicy(backupPolicy, itemPath, policy)
+    setBackupPolicy(newBackupPolicy)
   }
 
   return (
@@ -32,19 +27,11 @@ export default function PolicyTreeItems({ items }: PolicyTreeItemProps) {
         <TreeItem
           itemId={item.path}
           key={item.path}
-          sx={{
-            ["& .Mui-focused"]: {
-              backgroundColor: "#fff",
-              "&:hover": {
-                backgroundColor: alpha("#000000", 0.04),
-              },
-            },
-          }}
           label={
             <Box sx={{ display: "flex", alignItems: "center" }}>
               {item.type === "directory" && <FolderOpenOutlined sx={{ mr: "0.5rem" }} />}
               <Typography
-                children={item.root === true ? item.path : pathBasename(item.path)}
+                children={isRoot === true ? item.path : pathBasename(item.path)}
                 sx={{ fontWeight: item.type === "directory" ? "bold" : "normal" }}
               />
               <Typography
@@ -60,7 +47,7 @@ export default function PolicyTreeItems({ items }: PolicyTreeItemProps) {
                   mr: "1.5rem",
                 }}
               >
-                {policyList.map((policy) => (
+                {defaultPolicyList.map((policy) => (
                   <ToggleButton
                     key={policy}
                     value={policy}
@@ -81,7 +68,7 @@ export default function PolicyTreeItems({ items }: PolicyTreeItemProps) {
             </Box>
           }
           children={
-            item.children ? <PolicyTreeItems items={item.children} /> : null
+            item.children ? <PolicyTreeItems items={item.children} isRoot={false} /> : null
           }
         />
       ))}

@@ -1,5 +1,5 @@
 import { Check, FileCopyOutlined, UnfoldLessOutlined, UnfoldMoreOutlined } from "@mui/icons-material"
-import { Card, Tooltip, IconButton } from "@mui/material"
+import { Card, Tooltip, IconButton, Box } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useState } from "react"
 import SyntaxHighlighter from "react-syntax-highlighter"
@@ -38,10 +38,21 @@ export default function CodeBlock({ sx, codeString, language }: CodeBlockProps) 
           {copied ? <Check /> : <FileCopyOutlined />}
         </IconButton>
       </Tooltip>
-      <SyntaxHighlighter showLineNumbers language={language} style={github} customStyle={{ margin: 0, padding: "1rem 0.5rem", fontSize: "0.8rem" }}>
-        {isExpanded ? codeString : headCodeString}
-      </SyntaxHighlighter>
+      <Box sx={{
+        ["& .react-syntax-highlighter-line-number"]: {
+          minWidth: "5em",
+        },
+      }}>
+        <SyntaxHighlighter
+          showLineNumbers
+          language={language}
+          style={github}
+          customStyle={{ margin: 0, padding: "1rem 0.5rem", fontSize: "0.8rem" }}
+          lineNumberStyle={{ minWidth: "3em" }}
+        >
+          {isExpanded ? codeString : headCodeString}
+        </SyntaxHighlighter>
+      </Box>
     </Card >
   )
 }
-
