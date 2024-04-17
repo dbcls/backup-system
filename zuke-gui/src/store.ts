@@ -1,13 +1,13 @@
 import { atom } from "recoil"
 
-import { PolicyObj } from "@/types"
+import { PolicyTree } from "@/types"
 
 export const uploadedFileListAtom = atom<string | null>({
   key: "uploadedFileList",
   default: null,
 })
 
-export const backupPolicyAtom = atom<PolicyObj[]>({
-  key: "backupPolicy",
+export const policyTreeAtom = atom<PolicyTree>({
+  key: "policyTree",
   default: [],
 })
