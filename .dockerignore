@@ -1,0 +1,12 @@
+# Ignore everything
+**
+
+!.eslintrc.cjs
+!LICENSE
+!package-lock.json
+!package.json
+!README.md
+!src
+!tsconfig.json
+!tsconfig.node.json
+!vite.config.ts
