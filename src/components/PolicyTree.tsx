@@ -56,7 +56,7 @@ export default function PolicyTree(props: PolicyTreeProps) {
           </Typography>
           <Button
             variant="outlined"
-            color="primary"
+            color="secondary"
             sx={{
               mt: "1.5rem",
               textTransform: "none",

@@ -33,7 +33,7 @@ export default function PolicySec(props: PolicySecProps) {
         <Box sx={{ margin: "1.5rem 0", display: "flex", alignItems: "flex-end" }}>
           <Typography variant="body1" sx={{ fontSize: "1.2rem" }} children="1ヶ月あたりのコスト:" />
           <Box sx={{ margin: "0 0.5rem" }}>
-            <Typography variant="body1" sx={{ fontSize: "1.5rem", textDecoration: "underline" }} children={totalCost} />
+            <Typography variant="body1" sx={{ fontSize: "1.5rem", textDecoration: "underline", color: "#3f51b5" }} children={totalCost} />
           </Box>
           <Typography variant="body1" sx={{ fontSize: "1.2rem" }} children="円" />
         </Box>
