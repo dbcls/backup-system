@@ -32,7 +32,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/zuke:${{ github.ref }}
 
   create_gh_release:
-    if: github.repository == "dbcls/backup-system"
+    if: github.repository == 'dbcls/backup-system'
     runs-on: ubuntu-22.04
     steps:
       - name: Create Release
@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy_gh_pages:
-    if: github.repository == "dbcls/backup-system"
+    if: github.repository == 'dbcls/backup-system'
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
