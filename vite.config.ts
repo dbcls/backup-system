@@ -15,4 +15,11 @@ export default defineConfig({
   build: {
     outDir: "../dist",
   },
+  server: {
+    host: process.env.ZUKE_HOST || "0.0.0.0", // This app is designed to run in a container
+    port: parseInt(process.env.ZUKE_PORT || "3000"),
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+  },
 })

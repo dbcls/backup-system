@@ -10,10 +10,10 @@ export default function AppFooter(props: AppFooterProps) {
   return (
     <Box sx={{ ...props.sx, margin: "0 0 1.5rem" }}>
       <Typography variant="body2" color="text.secondary" align="center">
-        {"Copyright ©"} DBCLS {new Date().getFullYear()}
+        {"Copyright"} {new Date().getFullYear()} DBCLS (Database Center for Life Science), Japan
       </Typography>
       <Typography variant="body2" color="text.secondary" align="center">
-        Zuke-GUI {"Version 1.0.0"}
+        Zuke {__APP_VERSION__}
       </Typography>
     </Box >
   )
