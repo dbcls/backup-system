@@ -22,4 +22,5 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
   },
+  base: process.env.ZUKE_BASE_URL || "/",
 })
