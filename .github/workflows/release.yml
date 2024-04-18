@@ -7,7 +7,7 @@ on:
 
 jobs:
   release_docker_image:
-    if: github.repository == "dbcls/backup-system"
+    if: github.repository == 'dbcls/backup-system'
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
