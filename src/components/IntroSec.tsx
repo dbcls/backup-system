@@ -9,13 +9,19 @@ interface IntroSecProps {
 }
 
 const descContent = `
-- Server 上の Data の Backup 設定を生成するための GUI App です。下の項目を順に行ってください
-  - \`"1. File List の読み込み"\`: Server 上で、script (\`du\` や \`find\`) を実行し、この App に読み込ませる
-  - \`"2. Backup Policy の設定"\`: File ごとに、Policy (頻度や Backup 先) を設定する
-  - \`"3. Server での設定"\`: 生成された Backup script を Server 上に設定する
-- この App は、SPA (Single Page Application) で、全ての処理は Browser 上で行います
-  - どこかの Server に情報を送信することはありません
-  - この App の状態を一時保存する場合は、HeaderBar の "APP の状態を保存" ボタンを押してください
+このアプリは、以下の手順でサーバ上のデータのバックアップ設定を行います。
+
+- **1.File List の読み込み**
+  - サーバ上でスクリプト (\`get_file_list.sh\`) を実行し、生成されたファイルリストをこのアプリに読み込みます
+- **2. Backup Policy の設定**
+  - 各ファイルごとに Backup Policy (頻度やバックアップ先など) を設定します
+- **3. Server での設定**
+  - Policy に基づいて生成されたバックアップスクリプトをサーバ上で設定します
+
+特記事項:
+
+- このアプリは、どこかのサーバに情報を送信することはなく、全てのデータ処理をブラウザ内で行います
+- ブラウザ内のクッキーやローカルストレージも使用しないため、アプリの現在の状態を一次保存する場合は、ヘッダーバーにある「アプリの状態を保存」ボタンを使用してください
 `
 
 export default function IntroSec(props: IntroSecProps) {
