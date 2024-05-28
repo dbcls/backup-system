@@ -3,9 +3,9 @@ import { Box, Typography, Card } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
-import { useSetRecoilState } from "recoil"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 
-import { uploadedFileListAtom, policyTreeAtom } from "@/store"
+import { uploadedFileListAtom, policyConfigAtom, policyTreeAtom } from "@/store"
 import { FileSystemObj } from "@/types"
 import { parseJsonLines, initPolicyTree } from "@/utils"
 
@@ -16,6 +16,7 @@ interface FileListUploadFromProps {
 export default function FileListUploadFrom(props: FileListUploadFromProps) {
   const [uploadError, setUploadError] = useState<string | null>(null)
   const setUploadedFileList = useSetRecoilState(uploadedFileListAtom)
+  const policyConfig = useRecoilValue(policyConfigAtom)
   const setPolicyTree = useSetRecoilState(policyTreeAtom)
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -34,7 +35,7 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
       setUploadedFileList(text)
       // TODO: 型で validation する
       const fileSystemObjs = parseJsonLines(text) as FileSystemObj[]
-      const policyTree = initPolicyTree(fileSystemObjs)
+      const policyTree = initPolicyTree(fileSystemObjs, policyConfig[0].id)
       setPolicyTree(policyTree)
     }
     reader.onerror = () => {
@@ -44,7 +45,7 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
       setUploadError("ファイルの読み込みが中断されました。")
     }
     reader.readAsText(file)
-  }, [setUploadedFileList, setPolicyTree])
+  }, [setUploadedFileList, policyConfig, setPolicyTree])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   return (

@@ -1,12 +1,11 @@
 import { FolderOpenOutlined } from "@mui/icons-material"
 import { Box, Typography, ToggleButtonGroup, ToggleButton } from "@mui/material"
 import { TreeItem } from "@mui/x-tree-view/TreeItem"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 
-import { policyTreeAtom } from "@/store"
+import { policyConfigAtom, policyTreeAtom } from "@/store"
 import { PolicyTree } from "@/types"
 import { humanReadableSize, pathBasename, updatePolicyId } from "@/utils"
-import { defaultPolicyList } from "@/utils"
 
 interface PolicyTreeItemProps {
   nodes: PolicyTree
@@ -15,6 +14,7 @@ interface PolicyTreeItemProps {
 
 export default function PolicyTreeItems({ nodes, isRoot }: PolicyTreeItemProps) {
   const [policyTree, setPolicyTree] = useRecoilState(policyTreeAtom)
+  const policyConfig = useRecoilValue(policyConfigAtom)
 
   const handleChangePolicy = (nodePath: string, policyId: string) => {
     const newPolicyTree = updatePolicyId(policyTree, nodePath, policyId)
@@ -47,7 +47,7 @@ export default function PolicyTreeItems({ nodes, isRoot }: PolicyTreeItemProps) 
                   mr: "1.5rem",
                 }}
               >
-                {defaultPolicyList.map((policy) => (
+                {policyConfig.map((policy) => (
                   <ToggleButton
                     key={policy.id}
                     value={policy.id}

@@ -1,10 +1,10 @@
 import { Card, Box, Typography, Button } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { SimpleTreeView } from "@mui/x-tree-view"
-import { useRecoilState } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 
 import PolicyTreeItems from "@/components/PolicyTreeItems"
-import { policyTreeAtom } from "@/store"
+import { policyTreeAtom, policyConfigAtom } from "@/store"
 import treeDataExample from "@/treeDataExample.jsonl?raw"
 import { FileSystemObj } from "@/types"
 import { parseJsonLines, initPolicyTree } from "@/utils"
@@ -15,9 +15,10 @@ interface PolicyTreeProps {
 
 export default function PolicyTree(props: PolicyTreeProps) {
   const [policyTree, setPolicyTree] = useRecoilState(policyTreeAtom)
+  const policyConfig = useRecoilValue(policyConfigAtom)
   const setExampleData = () => {
     const fileSystemObjs = parseJsonLines(treeDataExample) as FileSystemObj[]
-    const policyTree = initPolicyTree(fileSystemObjs)
+    const policyTree = initPolicyTree(fileSystemObjs, policyConfig[0].id)
     setPolicyTree(policyTree)
   }
 

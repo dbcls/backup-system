@@ -53,9 +53,7 @@ export const parseJsonLines = (rawStr: string): object | object[] => {
   return json.length === 1 && !isRootArray ? json[0] : json
 }
 
-export const defaultPolicyList = policyConfig as PolicyConfig[]
-
-export const initPolicyTree = (fileSystemObjs: FileSystemObj[], defaultPolicy: string = defaultPolicyList[0].id): PolicyTree => {
+export const initPolicyTree = (fileSystemObjs: FileSystemObj[], defaultPolicy: string): PolicyTree => {
   fileSystemObjs.sort((a, b) => a.path.localeCompare(b.path))
   const pathToNodeMap: { [key: string]: PolicyTreeNode } = {}
   const roots: PolicyTreeNode[] = []

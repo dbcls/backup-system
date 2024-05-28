@@ -7,8 +7,8 @@ import OurMarkdown from "@/components/OurMarkdown"
 import PolicyTree from "@/components/PolicyTree"
 import SecHeader from "@/components/SecHeader"
 import policyDocsContent from "@/policyDocs.md?raw"
-import { policyTreeAtom } from "@/store"
-import { defaultPolicyList, calcBackupTotalCost } from "@/utils"
+import { policyConfigAtom, policyTreeAtom } from "@/store"
+import { calcBackupTotalCost } from "@/utils"
 
 interface PolicySecProps {
   sx?: SxProps
@@ -16,12 +16,13 @@ interface PolicySecProps {
 
 export default function PolicySec(props: PolicySecProps) {
   const policyTree = useRecoilValue(policyTreeAtom)
+  const policyConfig = useRecoilValue(policyConfigAtom)
   const [totalCost, setCost] = useState("0")
 
   useEffect(() => {
-    const cost = calcBackupTotalCost(policyTree, defaultPolicyList)
+    const cost = calcBackupTotalCost(policyTree, policyConfig)
     setCost(cost.toFixed(2))
-  }, [policyTree])
+  }, [policyTree, policyConfig])
 
   return (
     <Box sx={{ ...props.sx }}>
