@@ -1,8 +1,7 @@
-import policyConfig from "@/policyConfig.json"
+import policyConfigFile from "@/policyConfig.json"
 import { PolicyTree, PolicyTreeNode, FileSystemObj, PolicyConfig } from "@/types"
 
-// TODO: use environment variables or configuration file?
-export const DOLLAR_YEN_RATE = 150
+export const DOLLAR_YEN_RATE = policyConfigFile.dollarToYen
 
 export const humanReadableSize = (size: number) => {
   if (size === 0) return "0.00 B"
@@ -53,11 +52,28 @@ export const parseJsonLines = (rawStr: string): object | object[] => {
   return json.length === 1 && !isRootArray ? json[0] : json
 }
 
-export const initPolicyTree = (fileSystemObjs: FileSystemObj[], defaultPolicy: string): PolicyTree => {
-  fileSystemObjs.sort((a, b) => a.path.localeCompare(b.path))
+export const initPolicyTree = (
+  existingPolicyTree: PolicyTree = [],
+  fileSystemObjs: FileSystemObj[],
+  defaultPolicy: string,
+): PolicyTree => {
   const pathToNodeMap: { [key: string]: PolicyTreeNode } = {}
-  const roots: PolicyTreeNode[] = []
 
+  // Map existing policy tree nodes
+  const mapTreeNodes = (nodes: PolicyTreeNode[]) => {
+    nodes.forEach(node => {
+      pathToNodeMap[node.path] = node
+      if (node.children) mapTreeNodes(node.children)
+    })
+  }
+
+  // Initialize pathToNodeMap with existing policy tree
+  mapTreeNodes(existingPolicyTree)
+
+  const newPolicyTree = [...existingPolicyTree]
+
+  // Add new nodes to pathToNodeMap
+  fileSystemObjs.sort((a, b) => a.path.localeCompare(b.path))
   fileSystemObjs.forEach((obj) => {
     const node: PolicyTreeNode = {
       ...obj,
@@ -66,7 +82,7 @@ export const initPolicyTree = (fileSystemObjs: FileSystemObj[], defaultPolicy: s
     }
     const parentPath = obj.path.split("/").slice(0, -1).join("/")
     if (pathToNodeMap[parentPath] === undefined) {
-      roots.push(node)
+      newPolicyTree.push(node)
     } else {
       if (pathToNodeMap[parentPath].children === undefined) {
         pathToNodeMap[parentPath].children = []
@@ -76,7 +92,7 @@ export const initPolicyTree = (fileSystemObjs: FileSystemObj[], defaultPolicy: s
     pathToNodeMap[obj.path] = node
   })
 
-  return roots
+  return newPolicyTree
 }
 
 /*
@@ -112,7 +128,7 @@ export const calcBackupCost = (
 }
 
 export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: PolicyConfig[]): number => {
-  const policyToSizeMap = policyConfig.reduce((acc: { [key: string]: number }, policy) => {
+  const policyToSizeMap = policyConfigs.reduce((acc: { [key: string]: number }, policy) => {
     acc[policy.id] = 0
     return acc
   }, {})
@@ -130,7 +146,7 @@ export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: Polic
   policyTree.forEach(node => traverse(node))
 
   const totalCost = Object.entries(policyToSizeMap).reduce((acc, [policyId, size]) => {
-    const config = policyConfigs.find(p => p.id === policyId)! // TODO: handle undefined
+    const config = policyConfigs.find(p => p.id === policyId)!
     return acc + calcBackupCost(size / (1024 ** 3), config.generation, config.diffRatio, config.costPerMonth, config.constCost)
   }, 0)
 

@@ -12,6 +12,8 @@ export const FileSystemObjSchema: z.ZodSchema<FileSystemObj> = z.object({
   type: z.enum(["file", "directory"]),
 })
 
+export const FileSystemObjArraySchema: z.ZodSchema<FileSystemObj[]> = z.array(FileSystemObjSchema)
+
 export interface PolicyTreeNode extends FileSystemObj {
   children?: PolicyTreeNode[]
   policyId: string

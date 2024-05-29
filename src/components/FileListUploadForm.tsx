@@ -1,12 +1,12 @@
 import { FileUploadOutlined } from "@mui/icons-material"
 import { Box, Typography, Card } from "@mui/material"
 import { SxProps } from "@mui/system"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { useDropzone } from "react-dropzone"
-import { useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilValue, useRecoilState } from "recoil"
 
-import { uploadedFileListAtom, policyConfigAtom, policyTreeAtom } from "@/store"
-import { FileSystemObj } from "@/types"
+import { policyConfigAtom, policyTreeAtom } from "@/store"
+import { FileSystemObjArraySchema } from "@/types"
 import { parseJsonLines, initPolicyTree } from "@/utils"
 
 interface FileListUploadFromProps {
@@ -15,11 +15,10 @@ interface FileListUploadFromProps {
 
 export default function FileListUploadFrom(props: FileListUploadFromProps) {
   const [uploadError, setUploadError] = useState<string | null>(null)
-  const setUploadedFileList = useSetRecoilState(uploadedFileListAtom)
   const policyConfig = useRecoilValue(policyConfigAtom)
-  const setPolicyTree = useSetRecoilState(policyTreeAtom)
+  const [policyTree, setPolicyTree] = useRecoilState(policyTreeAtom)
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = (acceptedFiles: File[]) => {
     setUploadError(null)
     if (acceptedFiles.length === 0) {
       setUploadError("ファイルが選択されていません。")
@@ -32,11 +31,13 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
     const reader = new FileReader()
     reader.onload = () => {
       const text = reader.result as string
-      setUploadedFileList(text)
-      // TODO: 型で validation する
-      const fileSystemObjs = parseJsonLines(text) as FileSystemObj[]
-      const policyTree = initPolicyTree(fileSystemObjs, policyConfig[0].id)
-      setPolicyTree(policyTree)
+      const parseResult = FileSystemObjArraySchema.safeParse(parseJsonLines(text))
+      if (!parseResult.success) {
+        setUploadError("ファイルの形式が正しくありません。")
+        return
+      }
+      const newPolicyTree = initPolicyTree(policyTree, parseResult.data, policyConfig[0].id)
+      setPolicyTree(newPolicyTree)
     }
     reader.onerror = () => {
       setUploadError("ファイルの読み込みに失敗しました。")
@@ -45,8 +46,8 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
       setUploadError("ファイルの読み込みが中断されました。")
     }
     reader.readAsText(file)
-  }, [setUploadedFileList, policyConfig, setPolicyTree])
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+  }
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, maxFiles: 1 })
 
   return (
     <Box sx={{ ...props.sx }}>

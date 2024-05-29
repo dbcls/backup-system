@@ -38,26 +38,29 @@ Application is available at [https://dbcls.github.io/backup-system/](https://dbc
 - この File の中身の例として、
 
 ```json
-[
-  {
-    "id": "daily",
-    "label": "Daily",
-    "generation": 7,
-    "interval": 1,
-    "diffRatio": 1,
-    "costPerMonth": 0.025,
-    "constCost": 0
-  },
-  {
-    "id": "weekly",
-    "label": "Weekly",
-    "generation": 4,
-    "interval": 7,
-    "diffRatio": 0.1,
-    "costPerMonth": 0.02,
-    "constCost": 29.95
-  },
-]
+{
+  "dollarToYen": 150,
+  "policyConfig": [
+    {
+      "id": "daily",
+      "label": "Daily",
+      "generation": 7,
+      "interval": 1,
+      "diffRatio": 1,
+      "costPerMonth": 0.025,
+      "constCost": 0
+    },
+    {
+      "id": "weekly",
+      "label": "Weekly",
+      "generation": 4,
+      "interval": 7,
+      "diffRatio": 0.1,
+      "costPerMonth": 0.02,
+      "constCost": 29.95
+    },
+  ]
+}
 ```
 
 それぞれの項目の説明として、

@@ -1,10 +1,9 @@
 import { Button } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useRef } from "react"
-import { useErrorBoundary } from "react-error-boundary"
 import { useSetRecoilState } from "recoil"
 
-import { policyConfigAtom, policyTreeAtom, uploadedFileListAtom } from "@/store"
+import { alertAtom, policyConfigAtom, policyTreeAtom, uploadedFileListAtom } from "@/store"
 import { AppStateSchema } from "@/types"
 
 interface ImportStateButtonProps {
@@ -16,7 +15,7 @@ export default function ImportStateButton({ sx }: ImportStateButtonProps) {
   const setUploadedFileList = useSetRecoilState(uploadedFileListAtom)
   const setPolicyConfig = useSetRecoilState(policyConfigAtom)
   const setPolicyTree = useSetRecoilState(policyTreeAtom)
-  const { showBoundary } = useErrorBoundary()
+  const setAlert = useSetRecoilState(alertAtom)
 
   const openFileLoader = () => {
     if (fileInputRef.current) {
@@ -30,7 +29,7 @@ export default function ImportStateButton({ sx }: ImportStateButtonProps) {
       const fileContent = await file.text()
       const parseResult = await AppStateSchema.safeParseAsync(JSON.parse(fileContent))
       if (!parseResult.success) {
-        showBoundary(parseResult.error)
+        setAlert(`ファイルの形式が正しくありません。 ${parseResult.error.message}`)
       } else {
         const data = parseResult.data
         setUploadedFileList(data.uploadedFileList)

@@ -5,7 +5,6 @@ interface AppFooterProps {
   sx?: SxProps
 }
 
-// TODO: version should be dynamic
 export default function AppFooter(props: AppFooterProps) {
   return (
     <Box sx={{ ...props.sx, margin: "0 0 1.5rem" }}>
