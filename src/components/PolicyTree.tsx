@@ -1,10 +1,10 @@
 import { Card, Box, Typography, Button } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { SimpleTreeView } from "@mui/x-tree-view"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { useRecoilState, useSetRecoilState } from "recoil"
 
 import PolicyTreeItems from "@/components/PolicyTreeItems"
-import { policyTreeAtom, policyConfigAtom, alertAtom } from "@/store"
+import { policyTreeAtom, alertAtom } from "@/store"
 import treeDataExample from "@/treeDataExample.jsonl?raw"
 import { FileSystemObjArraySchema } from "@/types"
 import { parseJsonLines, initPolicyTree } from "@/utils"
@@ -15,7 +15,6 @@ interface PolicyTreeProps {
 
 export default function PolicyTree(props: PolicyTreeProps) {
   const [policyTree, setPolicyTree] = useRecoilState(policyTreeAtom)
-  const policyConfig = useRecoilValue(policyConfigAtom)
   const setAlert = useSetRecoilState(alertAtom)
 
   const setExampleData = () => {
@@ -24,7 +23,7 @@ export default function PolicyTree(props: PolicyTreeProps) {
       setAlert(`example file の形式が正しくありません。 ${parseResult.error.message}`)
       return
     }
-    const policyTree = initPolicyTree([], parseResult.data, policyConfig[0].id)
+    const policyTree = initPolicyTree([], parseResult.data)
     setPolicyTree(policyTree)
   }
 

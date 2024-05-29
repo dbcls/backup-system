@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue } from "recoil"
 
 import { policyConfigAtom, policyTreeAtom } from "@/store"
 import { PolicyTree } from "@/types"
-import { humanReadableSize, pathBasename, updatePolicyId } from "@/utils"
+import { humanReadableSize, pathBasename, updatePolicyId, NONE_POLICY_CONFIG } from "@/utils"
 
 interface PolicyTreeItemProps {
   nodes: PolicyTree
@@ -47,7 +47,7 @@ export default function PolicyTreeItems({ nodes, isRoot }: PolicyTreeItemProps) 
                   mr: "1.5rem",
                 }}
               >
-                {policyConfig.map((policy) => (
+                {[NONE_POLICY_CONFIG, ...policyConfig].map((policy) => (
                   <ToggleButton
                     key={policy.id}
                     value={policy.id}

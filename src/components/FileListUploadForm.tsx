@@ -3,9 +3,9 @@ import { Box, Typography, Card } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useState } from "react"
 import { useDropzone } from "react-dropzone"
-import { useRecoilValue, useRecoilState } from "recoil"
+import { useRecoilState } from "recoil"
 
-import { policyConfigAtom, policyTreeAtom } from "@/store"
+import { policyTreeAtom } from "@/store"
 import { FileSystemObjArraySchema } from "@/types"
 import { parseJsonLines, initPolicyTree } from "@/utils"
 
@@ -15,7 +15,6 @@ interface FileListUploadFromProps {
 
 export default function FileListUploadFrom(props: FileListUploadFromProps) {
   const [uploadError, setUploadError] = useState<string | null>(null)
-  const policyConfig = useRecoilValue(policyConfigAtom)
   const [policyTree, setPolicyTree] = useRecoilState(policyTreeAtom)
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -36,7 +35,7 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
         setUploadError("ファイルの形式が正しくありません。")
         return
       }
-      const newPolicyTree = initPolicyTree(policyTree, parseResult.data, policyConfig[0].id)
+      const newPolicyTree = initPolicyTree(policyTree, parseResult.data)
       setPolicyTree(newPolicyTree)
     }
     reader.onerror = () => {

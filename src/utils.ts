@@ -52,10 +52,20 @@ export const parseJsonLines = (rawStr: string): object | object[] => {
   return json.length === 1 && !isRootArray ? json[0] : json
 }
 
+export const NONE_POLICY_CONFIG: PolicyConfig = {
+  "id": "none",
+  "label": "None",
+  "generation": 0,
+  "interval": 0,
+  "diffRatio": 0,
+  "costPerMonth": 0,
+  "constCost": 0,
+}
+
 export const initPolicyTree = (
   existingPolicyTree: PolicyTree = [],
   fileSystemObjs: FileSystemObj[],
-  defaultPolicy: string,
+  defaultPolicy: string = NONE_POLICY_CONFIG.id,
 ): PolicyTree => {
   const pathToNodeMap: { [key: string]: PolicyTreeNode } = {}
 
@@ -146,6 +156,7 @@ export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: Polic
   policyTree.forEach(node => traverse(node))
 
   const totalCost = Object.entries(policyToSizeMap).reduce((acc, [policyId, size]) => {
+    if (policyId === NONE_POLICY_CONFIG.id) return acc
     const config = policyConfigs.find(p => p.id === policyId)!
     return acc + calcBackupCost(size / (1024 ** 3), config.generation, config.diffRatio, config.costPerMonth, config.constCost)
   }, 0)

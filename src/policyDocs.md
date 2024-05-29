@@ -1,5 +1,9 @@
 # 各 Policy の説明
 
+## None
+
+- Backup を行いません
+
 ## Daily
 
 - Object Storage (AWS S3 標準) に Full Backup します
