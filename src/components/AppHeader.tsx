@@ -1,5 +1,8 @@
-import { Box, AppBar, Typography, Button } from "@mui/material"
+import { Box, AppBar, Typography } from "@mui/material"
 import { SxProps } from "@mui/system"
+
+import ExportStateButton from "@/components/ExportStateButton"
+import ImportStateButton from "@/components/ImportStateButton"
 
 interface AppHeaderProps {
   sx?: SxProps
@@ -14,12 +17,8 @@ export default function AppHeader(props: AppHeaderProps) {
             Zuke
           </Typography>
           <Box>
-            <Button variant="contained" sx={{ mr: "1.5rem", border: "1px solid white", color: "white" }}>
-              App の状態を保存
-            </Button>
-            <Button variant="contained" sx={{ border: "1px solid white", color: "white" }}>
-              App の状態を読み込む
-            </Button>
+            <ExportStateButton />
+            <ImportStateButton />
           </Box>
         </Box>
       </AppBar>

@@ -1,7 +1,9 @@
 import CssBaseline from "@mui/material/CssBaseline"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { ErrorBoundary } from "react-error-boundary"
 import { RecoilRoot } from "recoil"
 
+import ErrorFallback from "@/pages/ErrorFallback"
 import Home from "@/pages/Home"
 
 // https://colorhunt.co/palette/22283131363f76abaeeeeeee
@@ -24,7 +26,9 @@ export default function App() {
     <RecoilRoot>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Home />
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <Home />
+        </ErrorBoundary>
       </ThemeProvider>
     </RecoilRoot >
   )

@@ -1,15 +1,33 @@
+import { z } from "zod"
+
 export interface FileSystemObj {
   path: string
   size: number
   type: "file" | "directory"
 }
 
+export const FileSystemObjSchema: z.ZodSchema<FileSystemObj> = z.object({
+  path: z.string(),
+  size: z.number(),
+  type: z.enum(["file", "directory"]),
+})
+
 export interface PolicyTreeNode extends FileSystemObj {
   children?: PolicyTreeNode[]
   policyId: string
 }
 
+export const PolicyTreeNodeSchema: z.ZodSchema<PolicyTreeNode> = z.object({
+  path: z.string(),
+  size: z.number(),
+  type: z.enum(["file", "directory"]),
+  children: z.array(z.lazy(() => PolicyTreeNodeSchema)).optional(),
+  policyId: z.string(),
+})
+
 export type PolicyTree = PolicyTreeNode[]
+
+export const PolicyTreeSchema: z.ZodSchema<PolicyTree> = z.array(PolicyTreeNodeSchema)
 
 /*
 * - id: ポリシーの ID
@@ -30,3 +48,36 @@ export interface PolicyConfig {
   costPerMonth: number
   constCost: number
 }
+
+export const PolicyConfigSchema: z.ZodSchema<PolicyConfig> = z.object({
+  id: z.string(),
+  label: z.string(),
+  generation: z.number(),
+  interval: z.number(),
+  diffRatio: z.number(),
+  costPerMonth: z.number(),
+  constCost: z.number(),
+})
+
+// The version of the AppState below. Change this value if changing the definition below.
+export const INTERFACE_VERSION = "1.0.0"
+
+export interface AppState {
+  general: {
+    appVersion: string
+    interfaceVersion: string
+  }
+  uploadedFileList: string | null
+  policyConfig: PolicyConfig[]
+  policyTree: PolicyTree
+}
+
+export const AppStateSchema: z.ZodSchema<AppState> = z.object({
+  general: z.object({
+    appVersion: z.string(),
+    interfaceVersion: z.string(),
+  }),
+  uploadedFileList: z.string().nullable(),
+  policyConfig: z.array(PolicyConfigSchema),
+  policyTree: PolicyTreeSchema,
+})
