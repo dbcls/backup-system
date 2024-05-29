@@ -21,6 +21,8 @@
 - NAT Gateway: `なし`
 - VPC エンドポイント: `S3 ゲートウェイ`
 
+![create_vpc](https://github.com/dbcls/backup-system/assets/26019402/ee7e0ea6-6e30-4c93-8364-8475c816df9b)
+
 ### 2. Security Group の作成
 
 - for Public Subnet
@@ -33,6 +35,10 @@
   - VPC: `zuke-test-vpc`
   - Inbound: `NFS (2049)`
   - Outbound: `Anywhere`
+
+![create_public_subnet](https://github.com/dbcls/backup-system/assets/26019402/62f4ab09-39d7-4c90-8b30-18cb751e98eb)
+
+![create_private_subnet](https://github.com/dbcls/backup-system/assets/26019402/4cb21860-4375-46a4-8e5e-ed2d837dccec)
 
 ### 3. EC2 instance の作成
 
@@ -50,6 +56,8 @@
   - Root: `8 GB`
   - **本番要件: もう少し大きなサイズ**
 
+![create_ec2](https://github.com/dbcls/backup-system/assets/26019402/71162652-5c2c-4923-b487-1d2a7e77336b)
+
 ### 4. EFS の作成
 
 - Name: `zuke-test-efs`
@@ -64,6 +72,10 @@
   - Mount Targets: `zuke-test-private-subnet`
   - Security Group: `zuke-test-private-sg`
 - File System Policy: `null`
+
+![create_efs_1](https://github.com/dbcls/backup-system/assets/26019402/56647de7-3756-47fe-9d68-52757b5feef2)
+
+![create_efs_2](https://github.com/dbcls/backup-system/assets/26019402/8f51478e-550d-4a59-8518-4975e265f152)
 
 ### 5. EC2 instance と EFS の接続
 
@@ -129,6 +141,8 @@ dd if=/dev/urandom of=/mnt/efs/eg_file_16mb bs=1M count=16
   - 適切な認証情報をもったユーザからのアクセスは許可される
 - バケットのバージョニング: `有効にする`
 - 暗号化タイプ: `SSE-S3`
+
+![create_s3](https://github.com/dbcls/backup-system/assets/26019402/809008bc-2a90-4962-b5bb-872ffcae8a3a)
 
 - 更に要件に応じて以下を設定する
   - Transition actions: 30 日後に S3 Standard - Infrequent Access に移行するなど
