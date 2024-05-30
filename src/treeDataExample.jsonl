@@ -3,7 +3,7 @@
 {"path": "/var/data/config", "size": 2520000, "type": "directory"}
 {"path": "/var/data/config/config1.json", "size": 440000, "type": "file"}
 {"path": "/var/data/config/config2.json", "size": 2000000, "type": "file"}
-{"path": "/var/data/config/config2.json", "size": 80000, "type": "file"}
+{"path": "/var/data/config/config3.json", "size": 80000, "type": "file"}
 {"path": "/var/data/database.db", "size": 120000000000, "type": "file"}
 {"path": "/var/data/documentation", "size": 955600, "type": "directory"}
 {"path": "/var/data/documentation/docs.rst", "size": 102400, "type": "file"}
