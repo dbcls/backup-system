@@ -108,6 +108,10 @@ export interface PolicyConfig {
 - 複雑なことをしたくなると、CLI command を用意して、それに JSON を渡したくなるが、CLI command のメンテナンス性や寿命とのトレードオフになる (例えば、Python の Version の変更など)
   - -> なるべく、メンテナンスフリーで長期間稼働してほしい
 
+### AWS Environment
+
+See [./aws_env.md](./aws_env.md) for details.
+
 ### 復旧方法
 
 - Under development (TODO)
@@ -131,6 +135,10 @@ bash release.sh <version>
 # 2. git commit & tag & push
 # (3. GitHub Actions で自動的に image/release/pages が生成・公開される)
 ```
+
+### Tests
+
+See [./tests/README.md](./tests/README.md) for details.
 
 ## License
 
