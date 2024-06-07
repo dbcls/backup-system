@@ -2,7 +2,7 @@ import { Button } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useRecoilValue } from "recoil"
 
-import { policyConfigAtom, policyTreeAtom, uploadedFileListAtom } from "@/store"
+import { policyConfigAtom, policyTreeAtom } from "@/store"
 import { AppState } from "@/types"
 import { INTERFACE_VERSION } from "@/types"
 
@@ -11,7 +11,6 @@ interface ExportStateButtonProps {
 }
 
 export default function ExportStateButton({ sx }: ExportStateButtonProps) {
-  const uploadedFileList = useRecoilValue(uploadedFileListAtom)
   const policyConfig = useRecoilValue(policyConfigAtom)
   const policyTree = useRecoilValue(policyTreeAtom)
 
@@ -21,7 +20,6 @@ export default function ExportStateButton({ sx }: ExportStateButtonProps) {
         appVersion: __APP_VERSION__,
         interfaceVersion: INTERFACE_VERSION,
       },
-      uploadedFileList,
       policyConfig,
       policyTree,
     }

@@ -39,7 +39,7 @@ export default function PolicySec(props: PolicySecProps) {
           <Typography variant="body1" sx={{ fontSize: "1.2rem" }} children="円" />
         </Box>
         <PolicyTree sx={{ margin: "1.5rem 0" }} />
-        <OurMarkdown markdown={policyDocsContent} sx={{ margin: "1.5rem" }} />
+        <OurMarkdown markdown={policyDocsContent} sx={{ margin: "1.5rem 0" }} />
       </Box>
     </Box>
   )

@@ -43,3 +43,6 @@ while IFS= read -r line; do
     echo "Created file: $path"
   fi
 done <"$INPUT_FILE"
+
+# Remove empty directories
+# find $DEST_DIR -type d -empty -delete

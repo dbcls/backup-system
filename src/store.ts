@@ -3,11 +3,6 @@ import { atom } from "recoil"
 import policyConfigFile from "@/policyConfig.json"
 import { PolicyTree, PolicyConfig } from "@/types"
 
-export const uploadedFileListAtom = atom<string | null>({
-  key: "uploadedFileList",
-  default: null,
-})
-
 export const policyConfigAtom = atom<PolicyConfig[]>({
   key: "policyConfig",
   default: policyConfigFile.policyConfig,

@@ -150,3 +150,5 @@ Cargo.lock
 *.pdb
 
 tests/test_data
+tests/test_file_list.jsonl
+tests/zuke-state-*

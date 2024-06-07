@@ -69,7 +69,6 @@ export interface AppState {
     appVersion: string
     interfaceVersion: string
   }
-  uploadedFileList: string | null
   policyConfig: PolicyConfig[]
   policyTree: PolicyTree
 }
@@ -79,7 +78,16 @@ export const AppStateSchema: z.ZodSchema<AppState> = z.object({
     appVersion: z.string(),
     interfaceVersion: z.string(),
   }),
-  uploadedFileList: z.string().nullable(),
   policyConfig: z.array(PolicyConfigSchema),
   policyTree: PolicyTreeSchema,
 })
+
+// { "policyId": ["path1", "path2", ...], ... }
+export interface BackupFiles {
+  [key: string]: string[]
+}
+
+export interface ScriptParams {
+  backupFiles: BackupFiles
+  policyConfig: PolicyConfig[]
+}

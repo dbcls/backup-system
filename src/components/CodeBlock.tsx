@@ -48,7 +48,7 @@ export default function CodeBlock({ sx, codeString, language }: CodeBlockProps) 
           language={language}
           style={github}
           customStyle={{ margin: 0, padding: "1rem 0.5rem", fontSize: "0.8rem" }}
-          lineNumberStyle={{ minWidth: "3em" }}
+          lineNumberStyle={{ minWidth: "3em", color: "#333333" }}
         >
           {isExpanded ? codeString : headCodeString}
         </SyntaxHighlighter>

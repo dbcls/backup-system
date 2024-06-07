@@ -1,5 +1,5 @@
 import policyConfigFile from "@/policyConfig.json"
-import { PolicyTree, PolicyTreeNode, FileSystemObj, PolicyConfig } from "@/types"
+import { PolicyTree, PolicyTreeNode, FileSystemObj, PolicyConfig, BackupFiles, ScriptParams } from "@/types"
 
 export const DOLLAR_YEN_RATE = policyConfigFile.dollarToYen
 
@@ -148,6 +148,7 @@ export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: Polic
       // children が存在する場合 (i.e., 親 directory)、子ノードを走査
       node.children.forEach(child => traverse(child))
     } else {
+      if (node.policyId === NONE_POLICY_CONFIG.id) return
       // childrenが存在しない場合、このノードのサイズを加算
       policyToSizeMap[node.policyId] += node.size
     }
@@ -162,4 +163,76 @@ export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: Polic
   }, 0)
 
   return totalCost * DOLLAR_YEN_RATE
+}
+
+export const mapBackupFiles = (policyTree: PolicyTree, policyConfigs: PolicyConfig[]): BackupFiles => {
+  const policyToFilesMap: BackupFiles = policyConfigs.reduce((acc: BackupFiles, policy) => {
+    acc[policy.id] = []
+    return acc
+  }, {})
+
+  const traverse = (node: PolicyTreeNode) => {
+    if (node.children && node.children.length > 0) {
+      // children が存在する場合 (i.e., 親 directory)、子ノードを走査
+      node.children.forEach(child => traverse(child))
+    } else {
+      if (node.policyId === NONE_POLICY_CONFIG.id) return
+      // childrenが存在しない場合、このノードの path を加算
+      policyToFilesMap[node.policyId].push(node.path)
+    }
+  }
+
+  policyTree.forEach(node => traverse(node))
+
+  return policyToFilesMap
+}
+
+export const generateBackupScript = (scriptParams: ScriptParams): string => {
+  return `#!/bin/bash
+
+# Usage: .backup.sh
+
+set -u
+
+# === Backup Params ===
+
+BACKUP_FILES='${JSON.stringify(scriptParams.backupFiles)}'
+POLICY_CONFIG='${JSON.stringify(scriptParams.policyConfig)}'
+
+# === Backup Script ===
+
+function full_backup() {
+  local paths=$1
+  local policy=$2
+  aws s3 sync $paths s3://my-backup-bucket/$policy
+}
+
+function inc_backup() {
+  local paths=$1
+  local policy=$2
+  rsync -a $paths s3://my-backup-bucket/$policy
+}
+
+function do_backup() {
+  local policies=$(echo $POLICY_CONFIG | jq -r '.[]')
+  for policy in $policies; do
+    local policy_id=$(echo $policy | jq -r '.id')
+    local diff_ratio=$(echo $policy | jq -r '.diffRatio')
+    local paths=$(echo $BACKUP_FILES | jq -r --arg policy_id "$policy_id" '.[$policy_id][]')
+    if [[ diff_ratio -eq 1 ]]; then
+      full_backup $paths $policy
+    else
+      inc_backup $paths $policy
+    fi
+  done
+}
+
+function main() {
+  echo "Start backup"
+  do_backup
+  echo "Finish backup"
+}
+
+main
+`
 }
