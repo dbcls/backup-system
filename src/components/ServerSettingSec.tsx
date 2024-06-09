@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil"
 
 import CodeBlock from "@/components/CodeBlock"
 import SecHeader from "@/components/SecHeader"
-import { policyConfigAtom, policyTreeAtom } from "@/store"
+import { policyConfigsAtom, policyTreeAtom } from "@/store"
 import { generateBackupScript, mapBackupFiles } from "@/utils"
 
 interface ServerSettingSecProps {
@@ -13,12 +13,12 @@ interface ServerSettingSecProps {
 
 export default function ServerSettingSec(props: ServerSettingSecProps) {
   const policyTree = useRecoilValue(policyTreeAtom)
-  const policyConfig = useRecoilValue(policyConfigAtom)
-  const backupFiles = mapBackupFiles(policyTree, policyConfig)
+  const policyConfigs = useRecoilValue(policyConfigsAtom)
+  const backupFiles = mapBackupFiles(policyTree, policyConfigs)
 
   const backupScript = generateBackupScript({
     backupFiles,
-    policyConfig,
+    policyConfigs,
   })
 
   return (

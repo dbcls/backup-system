@@ -1,11 +1,11 @@
 import { atom } from "recoil"
 
 import policyConfigFile from "@/policyConfig.json"
-import { PolicyTree, PolicyConfig } from "@/types"
+import { PolicyTree, PolicyConfig, PolicyConfigsSchema } from "@/types"
 
-export const policyConfigAtom = atom<PolicyConfig[]>({
+export const policyConfigsAtom = atom<PolicyConfig[]>({
   key: "policyConfig",
-  default: policyConfigFile.policyConfig,
+  default: PolicyConfigsSchema.parse(policyConfigFile.policyConfigs),
 })
 
 export const policyTreeAtom = atom<PolicyTree>({

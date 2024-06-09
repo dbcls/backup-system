@@ -49,6 +49,7 @@ export interface PolicyConfig {
   diffRatio: number
   costPerMonth: number
   constCost: number
+  type: "s3" | "rsync"
 }
 
 export const PolicyConfigSchema: z.ZodSchema<PolicyConfig> = z.object({
@@ -59,7 +60,10 @@ export const PolicyConfigSchema: z.ZodSchema<PolicyConfig> = z.object({
   diffRatio: z.number(),
   costPerMonth: z.number(),
   constCost: z.number(),
+  type: z.enum(["s3", "rsync"]),
 })
+
+export const PolicyConfigsSchema: z.ZodSchema<PolicyConfig[]> = z.array(PolicyConfigSchema)
 
 // The version of the AppState below. Change this value if changing the definition below.
 export const INTERFACE_VERSION = "1.0.0"
@@ -69,7 +73,7 @@ export interface AppState {
     appVersion: string
     interfaceVersion: string
   }
-  policyConfig: PolicyConfig[]
+  policyConfigs: PolicyConfig[]
   policyTree: PolicyTree
 }
 
@@ -78,7 +82,7 @@ export const AppStateSchema: z.ZodSchema<AppState> = z.object({
     appVersion: z.string(),
     interfaceVersion: z.string(),
   }),
-  policyConfig: z.array(PolicyConfigSchema),
+  policyConfigs: z.array(PolicyConfigSchema),
   policyTree: PolicyTreeSchema,
 })
 
@@ -89,5 +93,5 @@ export interface BackupFiles {
 
 export interface ScriptParams {
   backupFiles: BackupFiles
-  policyConfig: PolicyConfig[]
+  policyConfigs: PolicyConfig[]
 }

@@ -3,7 +3,7 @@ import { SxProps } from "@mui/system"
 import { useRef } from "react"
 import { useSetRecoilState } from "recoil"
 
-import { alertAtom, policyConfigAtom, policyTreeAtom } from "@/store"
+import { alertAtom, policyConfigsAtom, policyTreeAtom } from "@/store"
 import { AppStateSchema } from "@/types"
 
 interface ImportStateButtonProps {
@@ -12,7 +12,7 @@ interface ImportStateButtonProps {
 
 export default function ImportStateButton({ sx }: ImportStateButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const setPolicyConfig = useSetRecoilState(policyConfigAtom)
+  const setPolicyConfigs = useSetRecoilState(policyConfigsAtom)
   const setPolicyTree = useSetRecoilState(policyTreeAtom)
   const setAlert = useSetRecoilState(alertAtom)
 
@@ -31,7 +31,7 @@ export default function ImportStateButton({ sx }: ImportStateButtonProps) {
         setAlert(`ファイルの形式が正しくありません。 ${parseResult.error.message}`)
       } else {
         const data = parseResult.data
-        setPolicyConfig(data.policyConfig)
+        setPolicyConfigs(data.policyConfigs)
         setPolicyTree(data.policyTree)
       }
     }

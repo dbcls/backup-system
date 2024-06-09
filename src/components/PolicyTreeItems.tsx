@@ -3,7 +3,7 @@ import { Box, Typography, ToggleButtonGroup, ToggleButton } from "@mui/material"
 import { TreeItem } from "@mui/x-tree-view/TreeItem"
 import { useRecoilState, useRecoilValue } from "recoil"
 
-import { policyConfigAtom, policyTreeAtom } from "@/store"
+import { policyConfigsAtom, policyTreeAtom } from "@/store"
 import { PolicyTree } from "@/types"
 import { humanReadableSize, pathBasename, updatePolicyId, NONE_POLICY_CONFIG } from "@/utils"
 
@@ -14,7 +14,7 @@ interface PolicyTreeItemProps {
 
 export default function PolicyTreeItems({ nodes, isRoot }: PolicyTreeItemProps) {
   const [policyTree, setPolicyTree] = useRecoilState(policyTreeAtom)
-  const policyConfig = useRecoilValue(policyConfigAtom)
+  const policyConfigs = useRecoilValue(policyConfigsAtom)
 
   const handleChangePolicy = (nodePath: string, policyId: string) => {
     const newPolicyTree = updatePolicyId(policyTree, nodePath, policyId)
@@ -47,7 +47,7 @@ export default function PolicyTreeItems({ nodes, isRoot }: PolicyTreeItemProps) 
                   mr: "1.5rem",
                 }}
               >
-                {[NONE_POLICY_CONFIG, ...policyConfig].map((policy) => (
+                {[NONE_POLICY_CONFIG, ...policyConfigs].map((policy) => (
                   <ToggleButton
                     key={policy.id}
                     value={policy.id}

@@ -60,6 +60,7 @@ export const NONE_POLICY_CONFIG: PolicyConfig = {
   "diffRatio": 0,
   "costPerMonth": 0,
   "constCost": 0,
+  "type": "s3",
 }
 
 export const initPolicyTree = (
@@ -197,7 +198,7 @@ set -u
 # === Backup Params ===
 
 BACKUP_FILES='${JSON.stringify(scriptParams.backupFiles)}'
-POLICY_CONFIG='${JSON.stringify(scriptParams.policyConfig)}'
+POLICY_CONFIGS='${JSON.stringify(scriptParams.policyConfigs)}'
 
 # === Backup Script ===
 
@@ -214,7 +215,7 @@ function inc_backup() {
 }
 
 function do_backup() {
-  local policies=$(echo $POLICY_CONFIG | jq -r '.[]')
+  local policies=$(echo $POLICY_CONFIGS | jq -r '.[]')
   for policy in $policies; do
     local policy_id=$(echo $policy | jq -r '.id')
     local diff_ratio=$(echo $policy | jq -r '.diffRatio')

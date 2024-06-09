@@ -2,7 +2,7 @@ import { Button } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useRecoilValue } from "recoil"
 
-import { policyConfigAtom, policyTreeAtom } from "@/store"
+import { policyConfigsAtom, policyTreeAtom } from "@/store"
 import { AppState } from "@/types"
 import { INTERFACE_VERSION } from "@/types"
 
@@ -11,7 +11,7 @@ interface ExportStateButtonProps {
 }
 
 export default function ExportStateButton({ sx }: ExportStateButtonProps) {
-  const policyConfig = useRecoilValue(policyConfigAtom)
+  const policyConfigs = useRecoilValue(policyConfigsAtom)
   const policyTree = useRecoilValue(policyTreeAtom)
 
   const handleExport = () => {
@@ -20,7 +20,7 @@ export default function ExportStateButton({ sx }: ExportStateButtonProps) {
         appVersion: __APP_VERSION__,
         interfaceVersion: INTERFACE_VERSION,
       },
-      policyConfig,
+      policyConfigs,
       policyTree,
     }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
