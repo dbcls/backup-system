@@ -138,8 +138,10 @@ export const calcBackupCost = (
   return maxBackupSize * costPerMonth + constCost
 }
 
-export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: PolicyConfig[]): number => {
-  const policyToSizeMap = policyConfigs.reduce((acc: { [key: string]: number }, policy) => {
+type PolicyToSizeMap = { [key: string]: number }
+
+export const calcSumFileSize = (policyTree: PolicyTree, policyConfigs: PolicyConfig[]): PolicyToSizeMap => {
+  const policyToSizeMap = [NONE_POLICY_CONFIG, ...policyConfigs].reduce((acc: PolicyToSizeMap, policy) => {
     acc[policy.id] = 0
     return acc
   }, {})
@@ -149,13 +151,18 @@ export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: Polic
       // children が存在する場合 (i.e., 親 directory)、子ノードを走査
       node.children.forEach(child => traverse(child))
     } else {
-      if (node.policyId === NONE_POLICY_CONFIG.id) return
       // childrenが存在しない場合、このノードのサイズを加算
       policyToSizeMap[node.policyId] += node.size
     }
   }
 
   policyTree.forEach(node => traverse(node))
+
+  return policyToSizeMap
+}
+
+export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: PolicyConfig[], policyToSizeMap: PolicyToSizeMap | null = null): number => {
+  policyToSizeMap = policyToSizeMap || calcSumFileSize(policyTree, policyConfigs)
 
   const totalCost = Object.entries(policyToSizeMap).reduce((acc, [policyId, size]) => {
     if (policyId === NONE_POLICY_CONFIG.id) return acc

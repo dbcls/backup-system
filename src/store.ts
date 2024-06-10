@@ -4,7 +4,7 @@ import policyConfigFile from "@/policyConfig.json"
 import { PolicyTree, PolicyConfig, PolicyConfigsSchema } from "@/types"
 
 export const policyConfigsAtom = atom<PolicyConfig[]>({
-  key: "policyConfig",
+  key: "policyConfigs",
   default: PolicyConfigsSchema.parse(policyConfigFile.policyConfigs),
 })
 
