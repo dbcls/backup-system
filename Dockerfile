@@ -7,11 +7,6 @@ LABEL org.opencontainers.image.source="https://github.com/dbcls/backup-system/bl
 LABEL org.opencontainers.image.version="0.1.0"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 
-RUN apt update && \
-    apt install -y --no-install-recommends \
-    tini && \
-    rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
 COPY package.json package-lock.json /app/
 
@@ -23,5 +18,4 @@ RUN npm run build
 
 EXPOSE 3000
 
-ENTRYPOINT ["tini", "--"]
 CMD ["npm", "run", "preview"]
