@@ -149,6 +149,9 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
+# === our settings ===
+
 tests/test_data
 tests/test_file_list.jsonl
 tests/zuke-state-*
+minio-data
