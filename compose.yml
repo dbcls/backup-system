@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/dbcls/zuke:1.0.0
+    image: ghcr.io/dbcls/zuke:1.0.1
     container_name: zuke
     ports:
       - 0.0.0.0:3000:3000
