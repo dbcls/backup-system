@@ -94,13 +94,25 @@ function s3_backup() {
   if [[ -d $path ]]; then
     AWS_ACCESS_KEY_ID=$access_key_id \
     AWS_SECRET_ACCESS_KEY=$secret_access_key \
-    aws s3 sync $path s3://$bucket_name/${path#/} --endpoint-url $endpoint_url $dryrun_flag
+    aws s3 sync \
+      --endpoint-url $endpoint_url \
+      $dryrun_flag \
+      --exact-timestamps \
+      --delete \
+      $path s3://$bucket_name/${path#/}
   elif [[ -f $path ]]; then
     local dir=$(dirname $path)
     local filename=$(basename $path)
     AWS_ACCESS_KEY_ID=$access_key_id \
     AWS_SECRET_ACCESS_KEY=$secret_access_key \
-    aws s3 sync $dir s3://$bucket_name/${dir#/} --endpoint-url $endpoint_url --exclude "*" --include $filename $dryrun_flag
+    aws s3 sync \
+      --include $filename \
+      --exclude "*" \
+      --endpoint-url $endpoint_url \
+      $dryrun_flag \
+      --exact-timestamps \
+      --delete \
+      $dir s3://$bucket_name/${dir#/}
   else
     log "Warning: $path is not found, so skip backup"
   fi

@@ -91,24 +91,22 @@ export interface PolicyConfig {
 
 必要に応じて、これらの File を変更することで、ポリシーの設定を変更できる。
 
-### Backup Script 生成
+- 補足:
+  - 主に admin (zuke をあげる人) が設定するもの
+  - このファイルを編集するような、細かい設定を行いたいユースケースは存在するが、ユーザの認知負荷とのトレードオフなため、一旦この項自体 Under development とする
+    - ここまで、読んだ人すみません。。。
 
-- Under development (TODO)
-- Server Location や S3 Bucket の情報も渡さなければならない
-- Discussion として、
-  - GUI の画面上に、生成された script を表示する
-  - `rsync`, `s3`, `rclone`, etc. などを実行する script になると思われる
-  - 考慮するべき点として、
-    - Disk IO
-      - `ionice -c2 -n7 rsync` などで制限する？
-    - CPU/Memory Usage
-      - `nice` などで制限する？
-    - Network IO
-      - `tc tbf | netem` などで制限する？
-    - 死活監視
-      - Slack notification などを設定できるようにする？
-- 複雑なことをしたくなると、CLI command を用意して、それに JSON を渡したくなるが、CLI command のメンテナンス性や寿命とのトレードオフになる (例えば、Python の Version の変更など)
-  - -> なるべく、メンテナンスフリーで長期間稼働してほしい
+### FAQ
+
+- "実際にどうやって backup しているの？"
+  - 実処理は、[./src/public/backup.sh](./src/public/backup.sh) を参照
+  - `aws s3 sync` を用いています
+- "sync の基準は？"
+  - s3 sync の仕様 でかつ `--delete` と `--exact-timestamps` を用いています
+  - つまり、size が異なる or timestamp が異なるファイルは変更されたとみなされ、同期されます
+  - また、同期元のファイルが削除された場合、同期先のファイルも削除されます
+- "symlink はどうなる？"
+  - S3 が symlink をサポートしていないため対応できません
 
 ### AWS Environment
 
