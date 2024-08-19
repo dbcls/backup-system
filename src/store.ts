@@ -1,7 +1,7 @@
 import { atom, selector } from "recoil"
 
 import policyConfigFile from "@/policyConfig.json"
-import { PolicyTree, PolicyConfig, PolicyConfigsSchema, S3Config } from "@/types"
+import { PolicyTree, PolicyConfig, PolicyConfigsSchema, S3Config, AppState, INTERFACE_VERSION } from "@/types"
 
 export const policyConfigsAtom = atom<PolicyConfig[]>({
   key: "policyConfigs",
@@ -57,5 +57,23 @@ export const s3ConfigSelector = selector<S3Config>({
     const accessKeyId = get(accessKeyIdAtom)
     const secretAccessKey = get(secretAccessKeyAtom)
     return { endpointUrl, bucketName, accessKeyId, secretAccessKey }
+  }
+})
+
+export const appStateSelector = selector<AppState>({
+  key: "appState",
+  get: ({ get }) => {
+    const policyConfigs = get(policyConfigsAtom)
+    const policyTree = get(policyTreeAtom)
+    const s3Config = get(s3ConfigSelector)
+    return {
+      general: {
+        appVersion: __APP_VERSION__,
+        interfaceVersion: INTERFACE_VERSION,
+      },
+      policyConfigs,
+      policyTree,
+      s3Config,
+    }
   }
 })

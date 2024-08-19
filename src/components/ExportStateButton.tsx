@@ -2,28 +2,17 @@ import { Button } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useRecoilValue } from "recoil"
 
-import { policyConfigsAtom, policyTreeAtom } from "@/store"
-import { AppState } from "@/types"
-import { INTERFACE_VERSION } from "@/types"
+import { appStateSelector } from "@/store"
 
 interface ExportStateButtonProps {
   sx?: SxProps
 }
 
 export default function ExportStateButton({ sx }: ExportStateButtonProps) {
-  const policyConfigs = useRecoilValue(policyConfigsAtom)
-  const policyTree = useRecoilValue(policyTreeAtom)
+  const appState = useRecoilValue(appStateSelector)
 
   const handleExport = () => {
-    const data: AppState = {
-      general: {
-        appVersion: __APP_VERSION__,
-        interfaceVersion: INTERFACE_VERSION,
-      },
-      policyConfigs,
-      policyTree,
-    }
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+    const blob = new Blob([JSON.stringify(appState, null, 2)], { type: "application/json" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url

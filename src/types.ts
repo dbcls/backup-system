@@ -65,6 +65,20 @@ export const PolicyConfigSchema: z.ZodSchema<PolicyConfig> = z.object({
 
 export const PolicyConfigsSchema: z.ZodSchema<PolicyConfig[]> = z.array(PolicyConfigSchema)
 
+export interface S3Config {
+  endpointUrl: string
+  bucketName: string
+  accessKeyId: string
+  secretAccessKey: string
+}
+
+export const S3ConfigSchema: z.ZodSchema<S3Config> = z.object({
+  endpointUrl: z.string(),
+  bucketName: z.string(),
+  accessKeyId: z.string(),
+  secretAccessKey: z.string(),
+})
+
 // The version of the AppState below. Change this value if changing the definition below.
 export const INTERFACE_VERSION = "1.0.0"
 
@@ -75,6 +89,7 @@ export interface AppState {
   }
   policyConfigs: PolicyConfig[]
   policyTree: PolicyTree
+  s3Config: S3Config
 }
 
 export const AppStateSchema: z.ZodSchema<AppState> = z.object({
@@ -84,16 +99,10 @@ export const AppStateSchema: z.ZodSchema<AppState> = z.object({
   }),
   policyConfigs: z.array(PolicyConfigSchema),
   policyTree: PolicyTreeSchema,
+  s3Config: S3ConfigSchema,
 })
 
 // { "policyId": ["path1", "path2", ...], ... }
 export interface BackupFiles {
   [key: string]: string[]
-}
-
-export interface S3Config {
-  endpointUrl: string
-  bucketName: string
-  accessKeyId: string
-  secretAccessKey: string
 }
