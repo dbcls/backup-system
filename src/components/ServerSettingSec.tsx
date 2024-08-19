@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material"
 import { SxProps } from "@mui/system"
 import S3ConfigForm from "@/components/S3ConfigForm"
-import backupScriptUrl from "@/assets/backup.sh?url"
 import SecHeader from "@/components/SecHeader"
 import OpenInNewLink from "@/components/OpenInNewLink"
 import DownloadScriptsButton from "@/components/DownloadScriptsButton"
@@ -37,7 +36,7 @@ export default function ServerSettingSec({ sx }: ServerSettingSecProps) {
         </Typography>
         <S3ConfigForm sx={{ margin: "1.5rem" }} />
         <Typography variant="body1" component="div">
-          その後、Backup 設定と <OpenInNewLink text="backup.sh" href={backupScriptUrl} /> を含む Zip ファイルをダウンロードして、cron などで定期実行してください。
+          その後、Backup 設定と <OpenInNewLink text="backup.sh" href="./backup.sh" /> を含む Zip ファイルをダウンロードして、cron などで定期実行してください。
         </Typography>
         <DownloadScriptsButton sx={{ margin: "1.5rem" }} />
         <CodeBlock sx={{ margin: "0 0 1.5rem" }} codeString={exampleCode} language="bash" />

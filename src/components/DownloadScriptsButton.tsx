@@ -3,7 +3,7 @@ import { Button } from "@mui/material"
 import { useRecoilValue } from "recoil"
 import { policyConfigsAtom, policyTreeAtom, s3ConfigSelector, formInputtedSelector } from "@/store"
 import { mapBackupFiles } from "@/utils"
-import backupScript from "@/assets/backup.sh?raw"
+import backupScript from "@/public/backup.sh?raw"
 import JSZip from "jszip"
 
 interface DownloadScriptsButtonProps {
