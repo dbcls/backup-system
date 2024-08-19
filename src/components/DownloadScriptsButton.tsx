@@ -25,7 +25,6 @@ export default function DownloadScriptsButton({ sx }: DownloadScriptsButtonProps
     zip.file("policy_configs.json", JSON.stringify(policyConfigs, null, 2))
     zip.file("s3_config.json", JSON.stringify(s3Config, null, 2))
     zip.generateAsync({ type: "blob" }).then((blob) => {
-      console.log("HERE")
       const url = URL.createObjectURL(blob)
       const link = document.createElement("a")
       link.href = url

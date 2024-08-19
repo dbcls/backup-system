@@ -155,3 +155,5 @@ tests/test_data
 tests/test_file_list.jsonl
 tests/zuke-state-*
 minio-data
+zuke-state-*
+zuke-scripts-*
