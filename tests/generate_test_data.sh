@@ -29,7 +29,7 @@ while IFS= read -r line; do
 
   # Fix size
   size=$((size / 1000))
-  if [[ size -lt 4096 ]]; then
+  if [[ size -gt 4096 ]]; then
     size=4096
   fi
 
