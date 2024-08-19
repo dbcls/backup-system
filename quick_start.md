@@ -87,6 +87,7 @@ $ tree ./test_data
 まず、`zuke - 1. File List の読み込み` として、`get_file_list.sh` を、先程の `test_data` dir 近くに download し、実行します。
 
 ```bash=
+$ curl -O https://dbcls.github.io/backup-system/get_file_list.sh
 $ ls
 generate_test_data.sh  get_file_list.sh  README.md  test_data
 $ bash ./get_file_list.sh ./test_data > file_list.jsonl

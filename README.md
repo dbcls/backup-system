@@ -4,7 +4,7 @@ A backup system for DBCLS internal physical servers.
 
 Application is available at [https://dbcls.github.io/backup-system/](https://dbcls.github.io/backup-system/).
 
-**ともかく、試してみたいという方向けのドキュメント -> [./quickstart.md](./quickstart.md)**
+**ともかく、試してみたいという方向けのドキュメント -> [./quick_start.md](./quick_start.md)**
 
 ## Abstract
 

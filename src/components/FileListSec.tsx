@@ -2,7 +2,7 @@ import { Box, Typography, Button } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useSetRecoilState } from "recoil"
 
-import getFileListScript from "@/public/get_file_list.sh?raw"
+import getFileListScript from "@/get_file_list.sh?raw" // Cannot import as text file from public directory
 import CodeBlock from "@/components/CodeBlock"
 import FileListUploadFrom from "@/components/FileListUploadForm"
 import OpenInNewLink from "@/components/OpenInNewLink"
