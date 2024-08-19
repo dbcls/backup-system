@@ -25,9 +25,9 @@ Application is available at [https://dbcls.github.io/backup-system/](https://dbc
   - GitHub Pages に deploy されている
     - -> [https://dbcls.github.io/backup-system/](https://dbcls.github.io/backup-system/)
 - App 内の手順として、
-  - 1. `"File List の読み込み"`: Server 上で、script (`du` や `find`) を実行し、App に読み込ませる
-  - 2. `"Backup Policy の設定"`: File ごとに、Policy (頻度や Backup 先) を設定する
-  - 3. `"3. Server での設定"`: 生成された Backup script を Server 上に設定する
+  - `"1. File List の読み込み"`: Server 上で、script (`du` や `find`) を実行し、App に読み込ませる
+  - `"2. Backup Policy の設定"`: File ごとに、Policy (頻度や Backup 先) を設定する
+  - `"3. Server での設定"`: 生成された Backup script を Server 上に設定する
 - 汎用的なものとして実装する
   - 一度、日本語で PoC を作成し、その結果をもって完全英語化するかを検討する
 
