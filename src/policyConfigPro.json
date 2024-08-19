@@ -14,20 +14,20 @@
     {
       "id": "weekly",
       "label": "Weekly",
-      "generation": 1,
-      "interval": 1,
-      "diffRatio": 1,
-      "costPerMonth": 0.025,
-      "constCost": 0,
-      "type": "s3"
+      "generation": 4,
+      "interval": 7,
+      "diffRatio": 0.1,
+      "costPerMonth": 0.02,
+      "constCost": 29.95,
+      "type": "rsync"
     },
     {
       "id": "monthly",
       "label": "Monthly",
       "generation": 1,
-      "interval": 1,
+      "interval": 30,
       "diffRatio": 1,
-      "costPerMonth": 0.025,
+      "costPerMonth": 0.0125,
       "constCost": 0,
       "type": "s3"
     }

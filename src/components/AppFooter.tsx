@@ -5,9 +5,9 @@ interface AppFooterProps {
   sx?: SxProps
 }
 
-export default function AppFooter(props: AppFooterProps) {
+export default function AppFooter({ sx }: AppFooterProps) {
   return (
-    <Box sx={{ ...props.sx, margin: "0 0 1.5rem" }}>
+    <Box sx={{ ...sx, margin: "0 0 1.5rem" }}>
       <Typography variant="body2" color="text.secondary" align="center">
         {"Copyright"} {new Date().getFullYear()} DBCLS (Database Center for Life Science), Japan
       </Typography>

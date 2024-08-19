@@ -41,7 +41,7 @@ export default function ImportStateButton({ sx }: ImportStateButtonProps) {
     <>
       <Button
         variant="contained"
-        sx={{ mr: "1.5rem", border: "1px solid white", color: "white", ...sx }}
+        sx={{ ...sx, border: "1px solid white", color: "white" }}
         onClick={openFileLoader}
       >
         App の状態を読み込む

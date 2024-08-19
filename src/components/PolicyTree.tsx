@@ -13,7 +13,7 @@ interface PolicyTreeProps {
   sx?: SxProps
 }
 
-export default function PolicyTree(props: PolicyTreeProps) {
+export default function PolicyTree({ sx }: PolicyTreeProps) {
   const [policyTree, setPolicyTree] = useRecoilState(policyTreeAtom)
   const setAlert = useSetRecoilState(alertAtom)
 
@@ -28,7 +28,7 @@ export default function PolicyTree(props: PolicyTreeProps) {
   }
 
   return (
-    <Card sx={{ ...props.sx, padding: "0.5rem" }} variant="outlined">
+    <Card sx={{ ...sx, padding: "0.5rem" }} variant="outlined">
       {policyTree.length > 0 ? (
         <SimpleTreeView
           sx={{
@@ -67,7 +67,7 @@ export default function PolicyTree(props: PolicyTreeProps) {
               mt: "1.5rem",
               textTransform: "none",
             }}
-            onClick={() => setExampleData()}
+            onClick={setExampleData}
             children="Example Data を読み込む"
           />
         </Box>

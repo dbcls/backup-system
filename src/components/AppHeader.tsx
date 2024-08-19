@@ -8,16 +8,16 @@ interface AppHeaderProps {
   sx?: SxProps
 }
 
-export default function AppHeader(props: AppHeaderProps) {
+export default function AppHeader({ sx }: AppHeaderProps) {
   return (
-    <Box sx={{ ...props.sx, flexGrow: 1 }}>
+    <Box sx={{ ...sx, flexGrow: 1 }}>
       <AppBar position="static" sx={{ minHeight: "64px" }}>
-        <Box sx={{ flexGrow: 1, lineHeight: "64px", ml: "1.5rem", mr: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Box sx={{ flexGrow: 1, lineHeight: "64px", margin: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography component="h1" sx={{ fontSize: "1.5rem" }}>
             Zuke
           </Typography>
           <Box>
-            <ExportStateButton />
+            <ExportStateButton sx={{ mr: "1.5rem" }} />
             <ImportStateButton />
           </Box>
         </Box>

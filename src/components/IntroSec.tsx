@@ -24,9 +24,9 @@ const descContent = `
 - ブラウザ内のクッキーやローカルストレージも使用しません。アプリの現在の状態を一次保存する場合は、ヘッダーバーにある「アプリの状態を保存」ボタンを使用してください
 `
 
-export default function IntroSec(props: IntroSecProps) {
+export default function IntroSec({ sx }: IntroSecProps) {
   return (
-    <Box sx={{ ...props.sx }}>
+    <Box sx={{ ...sx }}>
       <SecHeader title="この App は何？🤔" />
       <OurMarkdown markdown={descContent} sx={{ margin: "1.5rem" }} />
     </Box>

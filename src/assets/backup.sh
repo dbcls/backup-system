@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Usage: .backup.sh [--dryrun] [--policy <daily|weekly|monthly>]
+# Usage: .backup.sh [--dryrun] [--policy <daily|weekly|monthly>] [-h|--help]
 
 set -euo pipefail
 
 HERE=$(cd $(dirname $0); pwd)
 
 BACKUP_FILES_NAME="backup_files.json"
-POLICY_CONFIG_NAME="policy_config.json"
+POLICY_CONFIGS_NAME="policy_configs.json"
 S3_CONFIG_NAME="s3_config.json"
 
 # === Option Parsing ===
@@ -29,6 +29,9 @@ while [[ $# -gt 0 ]]; do
     --policy)
       OPTION_POLICY=$2
       shift 2
+      ;;
+    -h|--help)
+      usage
       ;;
     *)
       usage
@@ -59,10 +62,10 @@ else
   exit 1
 fi
 
-if [[ -f $HERE/$POLICY_CONFIG_NAME ]]; then
-  POLICY_CONFIGS=$(cat $HERE/$POLICY_CONFIG_NAME)
+if [[ -f $HERE/$POLICY_CONFIGS_NAME ]]; then
+  POLICY_CONFIGS=$(cat $HERE/$POLICY_CONFIGS_NAME)
 else
-  echo "Error: $POLICY_CONFIG_NAME is not found"
+  echo "Error: $POLICY_CONFIGS_NAME is not found"
   exit 1
 fi
 
@@ -76,10 +79,10 @@ fi
 # === Backup Script ===
 
 function s3_backup() {
-  local endpoint_url=$(echo $S3_CONFIG | jq -r '.endpoint_url')
-  local bucket_name=$(echo $S3_CONFIG | jq -r '.bucket_name')
-  local access_key=$(echo $S3_CONFIG | jq -r '.access_key')
-  local secret_access_key=$(echo $S3_CONFIG | jq -r '.secret_access_key')
+  local endpoint_url=$(echo $S3_CONFIG | jq -r '.endpointUrl')
+  local bucket_name=$(echo $S3_CONFIG | jq -r '.bucketName')
+  local access_key_id=$(echo $S3_CONFIG | jq -r '.accessKeyId')
+  local secret_access_key=$(echo $S3_CONFIG | jq -r '.secretAccessKey')
 
   local path=$1
 
@@ -89,13 +92,13 @@ function s3_backup() {
   fi
 
   if [[ -d $path ]]; then
-    AWS_ACCESS_KEY_ID=$access_key \
+    AWS_ACCESS_KEY_ID=$access_key_id \
     AWS_SECRET_ACCESS_KEY=$secret_access_key \
     aws s3 sync $path s3://$bucket_name/${path#/} --endpoint-url $endpoint_url $dryrun_flag
   elif [[ -f $path ]]; then
     local dir=$(dirname $path)
     local filename=$(basename $path)
-    AWS_ACCESS_KEY_ID=$access_key \
+    AWS_ACCESS_KEY_ID=$access_key_id \
     AWS_SECRET_ACCESS_KEY=$secret_access_key \
     aws s3 sync $dir s3://$bucket_name/${dir#/} --endpoint-url $endpoint_url --exclude "*" --include $filename $dryrun_flag
   else

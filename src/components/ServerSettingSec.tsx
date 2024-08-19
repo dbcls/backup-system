@@ -1,39 +1,28 @@
-import { Box, Typography, TextField } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { SxProps } from "@mui/system"
-import { useRecoilValue } from "recoil"
-
-import CodeBlock from "@/components/CodeBlock"
+import S3ConfigForm from "@/components/S3ConfigForm"
+import backupScriptUrl from "@/assets/backup.sh?url"
 import SecHeader from "@/components/SecHeader"
-import { policyConfigsAtom, policyTreeAtom } from "@/store"
-import { generateBackupScript, mapBackupFiles } from "@/utils"
+import OpenInNewLink from "@/components/OpenInNewLink"
+import DownloadScriptsButton from "@/components/DownloadScriptsButton"
 
 interface ServerSettingSecProps {
   sx?: SxProps
 }
 
-export default function ServerSettingSec(props: ServerSettingSecProps) {
-  const policyTree = useRecoilValue(policyTreeAtom)
-  const policyConfigs = useRecoilValue(policyConfigsAtom)
-  const backupFiles = mapBackupFiles(policyTree, policyConfigs)
-
-  const backupScript = generateBackupScript({
-    backupFiles,
-    policyConfigs,
-  })
-
+export default function ServerSettingSec({ sx }: ServerSettingSecProps) {
   return (
-    <Box sx={{ ...props.sx }}>
+    <Box sx={{ ...sx }}>
       <SecHeader title="3. Server での設定" />
       <Box sx={{ margin: "1.5rem" }}>
         <Typography variant="body1">
-          下の Script は、Backup Policy を元に生成された Backup Script です。これを Crontab などで定期実行されるように設定してください。(TODO Update)
+          下のフォームで S3 Bucket の設定を入力してください。
         </Typography>
-        <Box sx={{ margin: "1.5rem 0", display: "flex" }}>
-          <TextField label="s3 Bucket Name (e.g.)" color="secondary" size="small" />
-          <TextField label="rsync host name (e.g.)" color="secondary" size="small" />
-          <TextField label="slack url" color="secondary" size="small" />
-        </Box>
-        <CodeBlock codeString={backupScript} language="bash" sx={{ margin: "1.5rem 0" }} />
+        <S3ConfigForm sx={{ margin: "1.5rem" }} />
+        <Typography variant="body1" component="div">
+          その後、Backup 設定と <OpenInNewLink text="backup.sh" href={backupScriptUrl} /> を含む Zip ファイルをダウンロードして、cron などで定期実行してください。
+        </Typography>
+        <DownloadScriptsButton sx={{ margin: "1.5rem" }} />
       </Box>
     </Box >
   )

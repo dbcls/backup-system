@@ -13,7 +13,7 @@ interface FileListUploadFromProps {
   sx?: SxProps
 }
 
-export default function FileListUploadFrom(props: FileListUploadFromProps) {
+export default function FileListUploadFrom({ sx }: FileListUploadFromProps) {
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [policyTree, setPolicyTree] = useRecoilState(policyTreeAtom)
 
@@ -49,7 +49,7 @@ export default function FileListUploadFrom(props: FileListUploadFromProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, maxFiles: 1 })
 
   return (
-    <Box sx={{ ...props.sx }}>
+    <Box sx={{ ...sx }}>
       <Card {...getRootProps()} variant="outlined" sx={{ background: "rgb(248, 248, 248)", textAlign: "center", cursor: "pointer", maxWidth: "600px" }}>
         <input {...getInputProps()} />
         <Box sx={{ margin: "1rem" }}>

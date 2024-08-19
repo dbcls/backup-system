@@ -36,7 +36,7 @@ export default function ExportStateButton({ sx }: ExportStateButtonProps) {
   return (
     <Button
       variant="contained"
-      sx={{ mr: "1.5rem", border: "1px solid white", color: "white", ...sx }}
+      sx={{ ...sx, border: "1px solid white", color: "white" }}
       onClick={handleExport}
     >
       App の状態を保存

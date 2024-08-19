@@ -13,7 +13,7 @@ interface PolicySecProps {
   sx?: SxProps
 }
 
-export default function PolicySec(props: PolicySecProps) {
+export default function PolicySec({ sx }: PolicySecProps) {
   const policyTree = useRecoilValue(policyTreeAtom)
   const policyConfigs = useRecoilValue(policyConfigsAtom)
   const [totalCost, setCost] = useState("0")
@@ -31,7 +31,7 @@ export default function PolicySec(props: PolicySecProps) {
   }, [policyTree, policyConfigs])
 
   return (
-    <Box sx={{ ...props.sx }}>
+    <Box sx={{ ...sx }}>
       <SecHeader title="2. Backup Policy の設定" />
       <Box sx={{ margin: "1.5rem" }}>
         <Typography variant="body1">
@@ -46,28 +46,30 @@ export default function PolicySec(props: PolicySecProps) {
             <Typography variant="body1" sx={{ fontSize: "1.2rem" }} children="円" />
           </Box>
           <Box>
-            <PieChart
-              // https://observablehq.com/@d3/color-schemes
-              colors={["#bab0ab", "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f"]}
-              series={[
-                {
-                  data: fileSizeData,
-                  innerRadius: 30,
-                  cornerRadius: 5,
-                  arcLabel: (item) => (item.label || "").replace(/\s*\(.*\)/, ""),
-                  arcLabelMinAngle: 45,
-                  cx: 100,
-                },
-              ]}
-              sx={{
-                [`& .${pieArcLabelClasses.root}`]: {
-                  fill: "white",
-                  fontWeight: "bold",
-                },
-              }}
-              width={400}
-              height={200}
-            />
+            {policyTree.length !== 0 &&
+              <PieChart
+                // https://observablehq.com/@d3/color-schemes
+                colors={["#bab0ab", "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f"]}
+                series={[
+                  {
+                    data: fileSizeData,
+                    innerRadius: 30,
+                    cornerRadius: 5,
+                    arcLabel: (item) => (item.label || "").replace(/\s*\(.*\)/, ""),
+                    arcLabelMinAngle: 45,
+                    cx: 100,
+                  },
+                ]}
+                sx={{
+                  [`& .${pieArcLabelClasses.root}`]: {
+                    fill: "white",
+                    fontWeight: "bold",
+                  },
+                }}
+                width={400}
+                height={200}
+              />
+            }
           </Box>
         </Box>
         <PolicyTree sx={{ margin: "1.5rem 0" }} />

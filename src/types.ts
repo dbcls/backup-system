@@ -91,7 +91,9 @@ export interface BackupFiles {
   [key: string]: string[]
 }
 
-export interface ScriptParams {
-  backupFiles: BackupFiles
-  policyConfigs: PolicyConfig[]
+export interface S3Config {
+  endpointUrl: string
+  bucketName: string
+  accessKeyId: string
+  secretAccessKey: string
 }

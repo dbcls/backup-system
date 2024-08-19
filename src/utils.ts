@@ -1,5 +1,5 @@
 import policyConfigFile from "@/policyConfig.json"
-import { PolicyTree, PolicyTreeNode, FileSystemObj, PolicyConfig, BackupFiles, ScriptParams } from "@/types"
+import { PolicyTree, PolicyTreeNode, FileSystemObj, PolicyConfig, BackupFiles } from "@/types"
 
 export const DOLLAR_YEN_RATE = policyConfigFile.dollarToYen
 
@@ -193,54 +193,4 @@ export const mapBackupFiles = (policyTree: PolicyTree, policyConfigs: PolicyConf
   policyTree.forEach(node => traverse(node))
 
   return policyToFilesMap
-}
-
-export const generateBackupScript = (scriptParams: ScriptParams): string => {
-  return `#!/bin/bash
-
-# Usage: .backup.sh
-
-set -u
-
-# === Backup Params ===
-
-BACKUP_FILES='${JSON.stringify(scriptParams.backupFiles)}'
-POLICY_CONFIGS='${JSON.stringify(scriptParams.policyConfigs)}'
-
-# === Backup Script ===
-
-function full_backup() {
-  local paths=$1
-  local policy=$2
-  aws s3 sync $paths s3://my-backup-bucket/$policy
-}
-
-function inc_backup() {
-  local paths=$1
-  local policy=$2
-  rsync -a $paths s3://my-backup-bucket/$policy
-}
-
-function do_backup() {
-  local policies=$(echo $POLICY_CONFIGS | jq -r '.[]')
-  for policy in $policies; do
-    local policy_id=$(echo $policy | jq -r '.id')
-    local diff_ratio=$(echo $policy | jq -r '.diffRatio')
-    local paths=$(echo $BACKUP_FILES | jq -r --arg policy_id "$policy_id" '.[$policy_id][]')
-    if [[ diff_ratio -eq 1 ]]; then
-      full_backup $paths $policy
-    else
-      inc_backup $paths $policy
-    fi
-  done
-}
-
-function main() {
-  echo "Start backup"
-  do_backup
-  echo "Finish backup"
-}
-
-main
-`
 }
