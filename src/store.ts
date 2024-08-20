@@ -18,46 +18,28 @@ export const alertAtom = atom<string | null>({
   default: null,
 })
 
-export const endpointUrlAtom = atom<string>({
-  key: "endpointUrl",
-  default: "https://s3.ap-northeast-1.amazonaws.com",
-})
-
-export const bucketNameAtom = atom<string>({
-  key: "bucketName",
-  default: "",
-})
-
-export const accessKeyIdAtom = atom<string>({
-  key: "accessKeyId",
-  default: "",
-})
-
-export const secretAccessKeyAtom = atom<string>({
-  key: "secretAccessKey",
-  default: "",
+export const s3ConfigAtom = atom<S3Config>({
+  key: "s3Config",
+  default: {
+    endpointUrl: "https://s3.ap-northeast-1.amazonaws.com",
+    bucketName: "",
+    accessKeyId: "",
+    secretAccessKey: "",
+    httpProxy: "",
+  },
 })
 
 export const formInputtedSelector = selector<boolean>({
   key: "formInputted",
   get: ({ get }) => {
-    const endpointUrl = get(endpointUrlAtom)
-    const bucketName = get(bucketNameAtom)
-    const accessKeyId = get(accessKeyIdAtom)
-    const secretAccessKey = get(secretAccessKeyAtom)
-    return endpointUrl !== "" && bucketName !== "" && accessKeyId !== "" && secretAccessKey !== ""
+    const s3Config = get(s3ConfigAtom)
+    return Object.entries(s3Config).every(([key, value]) => {
+      if (key === "httpProxy") {
+        return true
+      }
+      return value !== ""
+    })
   },
-})
-
-export const s3ConfigSelector = selector<S3Config>({
-  key: "s3Config",
-  get: ({ get }) => {
-    const endpointUrl = get(endpointUrlAtom)
-    const bucketName = get(bucketNameAtom)
-    const accessKeyId = get(accessKeyIdAtom)
-    const secretAccessKey = get(secretAccessKeyAtom)
-    return { endpointUrl, bucketName, accessKeyId, secretAccessKey }
-  }
 })
 
 export const appStateSelector = selector<AppState>({
@@ -65,7 +47,7 @@ export const appStateSelector = selector<AppState>({
   get: ({ get }) => {
     const policyConfigs = get(policyConfigsAtom)
     const policyTree = get(policyTreeAtom)
-    const s3Config = get(s3ConfigSelector)
+    const s3Config = get(s3ConfigAtom)
     return {
       general: {
         appVersion: __APP_VERSION__,

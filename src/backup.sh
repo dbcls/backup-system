@@ -79,12 +79,9 @@ fi
 # === Backup Script ===
 
 function s3_backup() {
-  local endpoint_url=$(echo $S3_CONFIG | jq -r '.endpointUrl')
-  local bucket_name=$(echo $S3_CONFIG | jq -r '.bucketName')
-  local access_key_id=$(echo $S3_CONFIG | jq -r '.accessKeyId')
-  local secret_access_key=$(echo $S3_CONFIG | jq -r '.secretAccessKey')
-
   local path=$1
+  local endpoint_url=$2
+  local bucket_name=$3
 
   local dryrun_flag=""
   if [[ $OPTION_DRYRUN == true ]]; then
@@ -92,8 +89,6 @@ function s3_backup() {
   fi
 
   if [[ -d $path ]]; then
-    AWS_ACCESS_KEY_ID=$access_key_id \
-    AWS_SECRET_ACCESS_KEY=$secret_access_key \
     aws s3 sync \
       --endpoint-url $endpoint_url \
       $dryrun_flag \
@@ -103,8 +98,6 @@ function s3_backup() {
   elif [[ -f $path ]]; then
     local dir=$(dirname $path)
     local filename=$(basename $path)
-    AWS_ACCESS_KEY_ID=$access_key_id \
-    AWS_SECRET_ACCESS_KEY=$secret_access_key \
     aws s3 sync \
       --include $filename \
       --exclude "*" \
@@ -119,7 +112,15 @@ function s3_backup() {
 }
 
 function do_backup() {
+  export AWS_ACCESS_KEY_ID=$(echo $S3_CONFIG | jq -r '.accessKeyId')
+  export AWS_SECRET_ACCESS_KEY=$(echo $S3_CONFIG | jq -r '.secretAccessKey')
+  local http_proxy=$(echo $S3_CONFIG | jq -r '.httpProxy')
+  if [[ $http_proxy != "" ]]; then
+    export HTTP_PROXY=$http_proxy
+  fi
+
   local files=$(echo $BACKUP_FILES | jq -r ".${OPTION_POLICY}[]")
+
   for file in $files; do
     s3_backup $file
   done

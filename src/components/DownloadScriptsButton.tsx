@@ -1,7 +1,7 @@
 import { SxProps } from "@mui/system"
 import { Button } from "@mui/material"
 import { useRecoilValue } from "recoil"
-import { policyConfigsAtom, policyTreeAtom, s3ConfigSelector, formInputtedSelector, appStateSelector } from "@/store"
+import { policyConfigsAtom, policyTreeAtom, s3ConfigAtom, formInputtedSelector, appStateSelector } from "@/store"
 import { mapBackupFiles } from "@/utils"
 import backupScript from "@/backup.sh?raw"  // Cannot import as text file from public directory
 import JSZip from "jszip"
@@ -16,7 +16,7 @@ export default function DownloadScriptsButton({ sx }: DownloadScriptsButtonProps
   const policyTree = useRecoilValue(policyTreeAtom)
   const policyConfigs = useRecoilValue(policyConfigsAtom)
   const backupFiles = mapBackupFiles(policyTree, policyConfigs)
-  const s3Config = useRecoilValue(s3ConfigSelector)
+  const s3Config = useRecoilValue(s3ConfigAtom)
   const appState = useRecoilValue(appStateSelector)
 
   const handleDownload = () => {

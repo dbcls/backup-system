@@ -2,9 +2,7 @@ import { Button } from "@mui/material"
 import { SxProps } from "@mui/system"
 import { useRef } from "react"
 import { useSetRecoilState } from "recoil"
-import {
-  alertAtom, policyConfigsAtom, policyTreeAtom, endpointUrlAtom, bucketNameAtom, accessKeyIdAtom, secretAccessKeyAtom
-} from "@/store"
+import { alertAtom, policyConfigsAtom, policyTreeAtom, s3ConfigAtom } from "@/store"
 import { AppStateSchema } from "@/types"
 
 interface ImportStateButtonProps {
@@ -15,10 +13,7 @@ export default function ImportStateButton({ sx }: ImportStateButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const setPolicyConfigs = useSetRecoilState(policyConfigsAtom)
   const setPolicyTree = useSetRecoilState(policyTreeAtom)
-  const setEndpointUrl = useSetRecoilState(endpointUrlAtom)
-  const setBucketName = useSetRecoilState(bucketNameAtom)
-  const setAccessKeyId = useSetRecoilState(accessKeyIdAtom)
-  const setSecretAccessKey = useSetRecoilState(secretAccessKeyAtom)
+  const setS3Config = useSetRecoilState(s3ConfigAtom)
   const setAlert = useSetRecoilState(alertAtom)
 
   const openFileLoader = () => {
@@ -38,10 +33,7 @@ export default function ImportStateButton({ sx }: ImportStateButtonProps) {
         const data = parseResult.data
         setPolicyConfigs(data.policyConfigs)
         setPolicyTree(data.policyTree)
-        setEndpointUrl(data.s3Config.endpointUrl)
-        setBucketName(data.s3Config.bucketName)
-        setAccessKeyId(data.s3Config.accessKeyId)
-        setSecretAccessKey(data.s3Config.secretAccessKey)
+        setS3Config(data.s3Config)
       }
     }
   }

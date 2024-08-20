@@ -70,6 +70,7 @@ export interface S3Config {
   bucketName: string
   accessKeyId: string
   secretAccessKey: string
+  httpProxy?: string
 }
 
 export const S3ConfigSchema: z.ZodSchema<S3Config> = z.object({
@@ -77,6 +78,7 @@ export const S3ConfigSchema: z.ZodSchema<S3Config> = z.object({
   bucketName: z.string(),
   accessKeyId: z.string(),
   secretAccessKey: z.string(),
+  httpProxy: z.string().optional(),
 })
 
 // The version of the AppState below. Change this value if changing the definition below.

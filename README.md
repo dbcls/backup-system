@@ -107,6 +107,8 @@ export interface PolicyConfig {
   - また、同期元のファイルが削除された場合、同期先のファイルも削除されます
 - "symlink はどうなる？"
   - S3 が symlink をサポートしていないため対応できません
+- "Directory の中に新しく file や directory が追加された場合は？"
+  - その parent directory の policy に従って、新しい file や directory が backup されます
 
 ### AWS Environment
 
