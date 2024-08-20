@@ -173,24 +173,78 @@ export const calcBackupTotalCost = (policyTree: PolicyTree, policyConfigs: Polic
   return totalCost * DOLLAR_YEN_RATE
 }
 
-export const mapBackupFiles = (policyTree: PolicyTree, policyConfigs: PolicyConfig[]): BackupFiles => {
+interface EachPathNode {
+  policyId: string
+  exclude: string[]
+}
+
+const leftStrip = (path: string, base: string): string => {
+  return path.startsWith(base) ? path.slice(base.length) : path
+}
+
+/*
+  * policyTree から policy ごとの s3 command 用の設定を生成する
+  * 未知の file や dir が来た時、parent の policy を引き継ぐという仕様のため、この生成 logic は少し複雑になる
+  * 
+  * 1. policyTree を flatten して、path と policyId の map を作成
+  * 2. 全 path を sort する (child node が常に parent node より先に来るようにする)
+  * 3. 末端 node (sort の最後) から順に、下の処理を行う
+  *   3.1. parent node が同じ policy の場合
+  *   3.2. 異なる場合
+  */
+export const mapBackupFiles = (policyTree: PolicyTree, policyConfigs:
+  PolicyConfig[]): BackupFiles => {
+  // 1. policyTree を flatten して、path と policyId の map を作成
+  const pathToPolicyMap: { [key: string]: EachPathNode } = {}
+  const traverse = (node: PolicyTreeNode) => {
+    pathToPolicyMap[node.path] = { policyId: node.policyId, exclude: [] }
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(child => traverse(child))
+    }
+  }
+  policyTree.forEach(node => traverse(node))
+
+  // 2. 全 path を sort する (child node が常に parent node より先に来るようにする)
+  const allPaths = Object.keys(pathToPolicyMap).sort((a, b) => b.localeCompare(a))
+
+  // 3. child node から順に、BackupFile を生成
   const policyToFilesMap: BackupFiles = policyConfigs.reduce((acc: BackupFiles, policy) => {
     acc[policy.id] = []
     return acc
   }, {})
+  for (const path of allPaths) {
+    const node = pathToPolicyMap[path]
+    const parentPath = path.split("/").slice(0, -1).join("/")
+    if (!(parentPath in pathToPolicyMap)) {
+      // root node
+      if (node.policyId !== NONE_POLICY_CONFIG.id) {
+        policyToFilesMap[node.policyId].push({ path, exclude: node.exclude })
+      }
+      continue
+    }
+    console.log(parentPath)
 
-  const traverse = (node: PolicyTreeNode) => {
-    if (node.children && node.children.length > 0) {
-      // children が存在する場合 (i.e., 親 directory)、子ノードを走査
-      node.children.forEach(child => traverse(child))
+    if (node.policyId === pathToPolicyMap[parentPath].policyId) {
+      // 3.1. parent node が同じ policy の場合
+      pathToPolicyMap[parentPath].exclude.push(...node.exclude)
     } else {
-      if (node.policyId === NONE_POLICY_CONFIG.id) return
-      // childrenが存在しない場合、このノードの path を加算
-      policyToFilesMap[node.policyId].push(node.path)
+      // 3.2. parent node が異なる policy の場合
+      pathToPolicyMap[parentPath].exclude.push(path)
+      if (node.policyId !== NONE_POLICY_CONFIG.id) {
+        policyToFilesMap[node.policyId].push({ path, exclude: node.exclude })
+      }
     }
   }
 
-  policyTree.forEach(node => traverse(node))
+  // 4. exclude の中身を相対 path に変換
+  for (const policyId in policyToFilesMap) {
+    policyToFilesMap[policyId] = policyToFilesMap[policyId].map(file => {
+      return {
+        path: file.path,
+        exclude: file.exclude.map(excPath => `${leftStrip(excPath, `${file.path}/`)}/*`),
+      }
+    })
+  }
 
   return policyToFilesMap
 }

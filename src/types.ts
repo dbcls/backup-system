@@ -104,7 +104,11 @@ export const AppStateSchema: z.ZodSchema<AppState> = z.object({
   s3Config: S3ConfigSchema,
 })
 
-// { "policyId": ["path1", "path2", ...], ... }
+export interface BackupFile {
+  path: string
+  exclude: string[]
+}
+
 export interface BackupFiles {
-  [key: string]: string[]
+  [key: string]: BackupFile[]
 }

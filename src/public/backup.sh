@@ -4,7 +4,10 @@
 
 set -euo pipefail
 
-HERE=$(cd $(dirname $0); pwd)
+HERE=$(
+  cd $(dirname $0)
+  pwd
+)
 
 BACKUP_FILES_NAME="backup_files.json"
 POLICY_CONFIGS_NAME="policy_configs.json"
@@ -22,20 +25,20 @@ function usage() {
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --dryrun)
-      OPTION_DRYRUN=true
-      shift
-      ;;
-    --policy)
-      OPTION_POLICY=$2
-      shift 2
-      ;;
-    -h|--help)
-      usage
-      ;;
-    *)
-      usage
-      ;;
+  --dryrun)
+    OPTION_DRYRUN=true
+    shift
+    ;;
+  --policy)
+    OPTION_POLICY=$2
+    shift 2
+    ;;
+  -h | --help)
+    usage
+    ;;
+  *)
+    usage
+    ;;
   esac
 done
 
@@ -47,6 +50,11 @@ fi
 if [[ $OPTION_POLICY != "daily" && $OPTION_POLICY != "weekly" && $OPTION_POLICY != "monthly" ]]; then
   echo "Error: --policy option must be one of daily, weekly, or monthly"
   usage
+fi
+
+DRYRUN_FLAG=""
+if [[ $OPTION_DRYRUN == true ]]; then
+  DRYRUN_FLAG="--dryrun"
 fi
 
 function log() {
@@ -79,37 +87,34 @@ fi
 # === Backup Script ===
 
 function s3_backup() {
-  local endpoint_url=$(echo $S3_CONFIG | jq -r '.endpointUrl')
-  local bucket_name=$(echo $S3_CONFIG | jq -r '.bucketName')
-  local access_key_id=$(echo $S3_CONFIG | jq -r '.accessKeyId')
-  local secret_access_key=$(echo $S3_CONFIG | jq -r '.secretAccessKey')
+  local count=$1
+  local path=$(echo $BACKUP_FILES | jq -r ".${OPTION_POLICY}[$count].path")
+  local excludes=$(echo $BACKUP_FILES | jq -r ".${OPTION_POLICY}[$count].exclude[]")
 
-  local path=$1
-
-  local dryrun_flag=""
-  if [[ $OPTION_DRYRUN == true ]]; then
-    dryrun_flag="--dryrun"
-  fi
+  local endpoint_url=$2
+  local bucket_name=$3
 
   if [[ -d $path ]]; then
-    AWS_ACCESS_KEY_ID=$access_key_id \
-    AWS_SECRET_ACCESS_KEY=$secret_access_key \
+    local exclude_flags=""
+    for exclude in $excludes; do
+      exclude_flags="$exclude_flags --exclude $exclude"
+    done
+
     aws s3 sync \
+      $exclude_flags \
       --endpoint-url $endpoint_url \
-      $dryrun_flag \
+      $DRYRUN_FLAG \
       --exact-timestamps \
       --delete \
       $path s3://$bucket_name/${path#/}
   elif [[ -f $path ]]; then
     local dir=$(dirname $path)
     local filename=$(basename $path)
-    AWS_ACCESS_KEY_ID=$access_key_id \
-    AWS_SECRET_ACCESS_KEY=$secret_access_key \
     aws s3 sync \
-      --include $filename \
       --exclude "*" \
+      --include $filename \
       --endpoint-url $endpoint_url \
-      $dryrun_flag \
+      $DRYRUN_FLAG \
       --exact-timestamps \
       --delete \
       $dir s3://$bucket_name/${dir#/}
@@ -119,9 +124,18 @@ function s3_backup() {
 }
 
 function do_backup() {
-  local files=$(echo $BACKUP_FILES | jq -r ".${OPTION_POLICY}[]")
-  for file in $files; do
-    s3_backup $file
+  export AWS_ACCESS_KEY_ID=$(echo $S3_CONFIG | jq -r '.accessKeyId')
+  export AWS_SECRET_ACCESS_KEY=$(echo $S3_CONFIG | jq -r '.secretAccessKey')
+  local http_proxy=$(echo $S3_CONFIG | jq -r '.httpProxy')
+  if [[ $http_proxy != "" ]]; then
+    export HTTP_PROXY=$http_proxy
+  fi
+  local endpoint_url=$(echo $S3_CONFIG | jq -r '.endpointUrl')
+  local bucket_name=$(echo $S3_CONFIG | jq -r '.bucketName')
+
+  local count=$(echo $BACKUP_FILES | jq -r ".${OPTION_POLICY} | length")
+  for ((i = 0; i < count; i++)); do
+    s3_backup $i $endpoint_url $bucket_name
   done
 }
 

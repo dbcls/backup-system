@@ -5,6 +5,7 @@ import { policyConfigsAtom, policyTreeAtom, s3ConfigAtom, formInputtedSelector, 
 import { mapBackupFiles } from "@/utils"
 import backupScript from "@/backup.sh?raw"  // Cannot import as text file from public directory
 import JSZip from "jszip"
+import CodeBlock from "./CodeBlock"
 
 interface DownloadScriptsButtonProps {
   sx?: SxProps
@@ -48,7 +49,6 @@ export default function DownloadScriptsButton({ sx }: DownloadScriptsButtonProps
       onClick={handleDownload}
       disabled={!formInputted}
       children={`Zip ファイルをダウンロード${!formInputted ? " (フォームを入力してください)" : ""}`}
-    >
-    </Button>
+    />
   )
 }

@@ -47,7 +47,7 @@ export default function PolicyTreeItems({ nodes, isRoot }: PolicyTreeItemProps) 
                   mr: "1.5rem",
                 }}
               >
-                {[NONE_POLICY_CONFIG, ...policyConfigs].map((policy) => (
+                {[...policyConfigs, NONE_POLICY_CONFIG].map((policy) => (
                   <ToggleButton
                     key={policy.id}
                     value={policy.id}
