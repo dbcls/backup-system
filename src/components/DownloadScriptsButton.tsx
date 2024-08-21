@@ -5,7 +5,6 @@ import { policyConfigsAtom, policyTreeAtom, s3ConfigAtom, formInputtedSelector, 
 import { mapBackupFiles } from "@/utils"
 import backupScript from "@/backup.sh?raw"  // Cannot import as text file from public directory
 import JSZip from "jszip"
-import CodeBlock from "./CodeBlock"
 
 interface DownloadScriptsButtonProps {
   sx?: SxProps
