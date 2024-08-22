@@ -135,8 +135,13 @@ function do_backup() {
   local create_bucket=$(echo $S3_CONFIG | jq -r '.createBucket')
 
   if [[ $create_bucket == "true" ]]; then
-    log "Create bucket: $bucket_name"
-    aws s3api create-bucket --bucket $bucket_name --endpoint-url $endpoint_url
+    local exists=$(aws s3api head-bucket --bucket $bucket_name --endpoint-url $endpoint_url 2>&1 || true)
+    if [[ $exists == "" ]]; then
+      log "Bucket $bucket_name already exists, so skip create"
+    else
+      log "Create bucket: $bucket_name"
+      aws s3api create-bucket --bucket $bucket_name --endpoint-url $endpoint_url
+    fi
   fi
 
   local count=$(echo $BACKUP_FILES | jq -r ".${OPTION_POLICY} | length")
