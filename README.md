@@ -31,7 +31,39 @@ Application is available at [https://dbcls.github.io/backup-system/](https://dbc
 - 汎用的なものとして実装する
   - 一度、日本語で PoC を作成し、その結果をもって完全英語化するかを検討する
 
-### ポリシーの事前設定
+### FAQ
+
+- "実際にどうやって backup しているの？"
+  - 実処理は、[./src/public/backup.sh](./src/public/backup.sh) を参照
+  - `aws s3 sync` を用いています
+- "sync の基準は？"
+  - s3 sync の仕様 でかつ `--delete` と `--exact-timestamps` を用いています
+  - つまり、size が異なる or timestamp が異なるファイルは変更されたとみなされ、同期されます
+  - また、同期元のファイルが削除された場合、同期先のファイルも削除されます
+- "symlink はどうなる？"
+  - S3 が symlink をサポートしていないため対応できません
+- "Directory の中に新しく file や directory が追加された場合は？"
+  - その parent directory の policy に従って、新しい file や directory が backup されます
+
+### Zuke Server の建て方
+
+基本的に、GitHub Pages に deploy されているものを使うことを想定していますが、S3 Config の default value などを変更する場合は、以下の手順で Server を建てることができます。
+
+```bash
+$ cat compose.yml | grep DEFAULT
+    #   - ZUKE_S3_DEFAULT_ENDPOINT_URL=http://localhost:9000
+    #   - ZUKE_S3_DEFAULT_BUCKET_NAME=
+    #   - ZUKE_S3_DEFAULT_ACCESS_KEY_ID=
+    #   - ZUKE_S3_DEFAULT_SECRET_ACCESS_KEY=
+    #   - ZUKE_S3_DEFAULT_HTTP_PROXY=
+
+# 必要に応じて、上記のコメントアウトを外して、必要な情報を記述する
+
+$ docker compose up -d
+# Access to http://localhost:3000
+```
+
+### ポリシーの事前設定 (for Admin)
 
 - バックアップポリシーについての考察は、別 docs [./backup_policy.md](./backup_policy.md) を参照
 - Admin は、ポリシー (e.g., バックアップ頻度、バックアップ先, etc.) を事前に設定する
@@ -95,20 +127,6 @@ export interface PolicyConfig {
   - 主に admin (zuke をあげる人) が設定するもの
   - このファイルを編集するような、細かい設定を行いたいユースケースは存在するが、ユーザの認知負荷とのトレードオフなため、一旦この項自体 Under development とする
     - ここまで、読んだ人すみません。。。
-
-### FAQ
-
-- "実際にどうやって backup しているの？"
-  - 実処理は、[./src/public/backup.sh](./src/public/backup.sh) を参照
-  - `aws s3 sync` を用いています
-- "sync の基準は？"
-  - s3 sync の仕様 でかつ `--delete` と `--exact-timestamps` を用いています
-  - つまり、size が異なる or timestamp が異なるファイルは変更されたとみなされ、同期されます
-  - また、同期元のファイルが削除された場合、同期先のファイルも削除されます
-- "symlink はどうなる？"
-  - S3 が symlink をサポートしていないため対応できません
-- "Directory の中に新しく file や directory が追加された場合は？"
-  - その parent directory の policy に従って、新しい file や directory が backup されます
 
 ### AWS Environment
 
