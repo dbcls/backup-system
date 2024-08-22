@@ -21,12 +21,12 @@ export const alertAtom = atom<string | null>({
 export const s3ConfigAtom = atom<S3Config>({
   key: "s3Config",
   default: {
-    endpointUrl: "https://s3.ap-northeast-1.amazonaws.com",
-    bucketName: "",
+    endpointUrl: DEFAULT_ENDPOINT_URL,
+    bucketName: DEFAULT_BUCKET_NAME,
     createBucket: true,
-    accessKeyId: "",
-    secretAccessKey: "",
-    httpProxy: "",
+    accessKeyId: DEFAULT_ACCESS_KEY_ID,
+    secretAccessKey: DEFAULT_SECRET_ACCESS_KEY,
+    httpProxy: DEFAULT_HTTP_PROXY,
   },
 })
 

@@ -4,6 +4,12 @@ services:
     container_name: zuke
     ports:
       - 0.0.0.0:3000:3000
+    # environment:
+    #   - ZUKE_S3_DEFAULT_ENDPOINT_URL=http://localhost:9000
+    #   - ZUKE_S3_DEFAULT_BUCKET_NAME=
+    #   - ZUKE_S3_DEFAULT_ACCESS_KEY_ID=
+    #   - ZUKE_S3_DEFAULT_SECRET_ACCESS_KEY=
+    #   - ZUKE_S3_DEFAULT_HTTP_PROXY=
     restart: on-failure
     working_dir: /app
-    command: [ "npm", "run", "serve"]
+    command: [ "npm", "run", "preview" ]

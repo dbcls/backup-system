@@ -21,6 +21,12 @@ export default defineConfig({
   },
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+    DEFAULT_ENDPOINT_URL: JSON.stringify(process.env.ZUKE_S3_DEFAULT_ENDPOINT_URL || "https://s3.ap-northeast-1.amazonaws.com"),
+    DEFAULT_BUCKET_NAME: JSON.stringify(process.env.ZUKE_S3_DEFAULT_BUCKET_NAME || ""),
+    DEFAULT_ACCESS_KEY_ID: JSON.stringify(process.env.ZUKE_S3_DEFAULT_ACCESS_KEY_ID || ""),
+    DEFAULT_SECRET_ACCESS_KEY: JSON.stringify(process.env.ZUKE_S3_DEFAULT_SECRET_ACCESS_KEY || ""),
+    DEFAULT_HTTP_PROXY: JSON.stringify(process.env.ZUKE_S3_DEFAULT_HTTP_PROXY || ""),
+
   },
   base: process.env.ZUKE_BASE_URL || "/",
 })
