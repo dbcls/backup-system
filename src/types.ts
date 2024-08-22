@@ -68,6 +68,7 @@ export const PolicyConfigsSchema: z.ZodSchema<PolicyConfig[]> = z.array(PolicyCo
 export interface S3Config {
   endpointUrl: string
   bucketName: string
+  createBucket?: boolean
   accessKeyId: string
   secretAccessKey: string
   httpProxy?: string
@@ -76,6 +77,7 @@ export interface S3Config {
 export const S3ConfigSchema: z.ZodSchema<S3Config> = z.object({
   endpointUrl: z.string(),
   bucketName: z.string(),
+  createBucket: z.boolean().optional(),
   accessKeyId: z.string(),
   secretAccessKey: z.string(),
   httpProxy: z.string().optional(),

@@ -132,6 +132,12 @@ function do_backup() {
   fi
   local endpoint_url=$(echo $S3_CONFIG | jq -r '.endpointUrl')
   local bucket_name=$(echo $S3_CONFIG | jq -r '.bucketName')
+  local create_bucket=$(echo $S3_CONFIG | jq -r '.createBucket')
+
+  if [[ $create_bucket == "true" ]]; then
+    log "Create bucket: $bucket_name"
+    aws s3api create-bucket --bucket $bucket_name --endpoint-url $endpoint_url
+  fi
 
   local count=$(echo $BACKUP_FILES | jq -r ".${OPTION_POLICY} | length")
   for ((i = 0; i < count; i++)); do

@@ -23,6 +23,7 @@ export const s3ConfigAtom = atom<S3Config>({
   default: {
     endpointUrl: "https://s3.ap-northeast-1.amazonaws.com",
     bucketName: "",
+    createBucket: true,
     accessKeyId: "",
     secretAccessKey: "",
     httpProxy: "",
@@ -34,7 +35,7 @@ export const formInputtedSelector = selector<boolean>({
   get: ({ get }) => {
     const s3Config = get(s3ConfigAtom)
     return Object.entries(s3Config).every(([key, value]) => {
-      if (key === "httpProxy") {
+      if (key === "createBucket" || key === "httpProxy") {
         return true
       }
       return value !== ""
