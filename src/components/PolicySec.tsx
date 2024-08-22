@@ -9,6 +9,15 @@ import SecHeader from "@/components/SecHeader"
 import { policyConfigsAtom, policyTreeAtom } from "@/store"
 import { humanReadableSize, NONE_POLICY_CONFIG, calcSumFileSize, calcBackupTotalCost } from "@/utils"
 
+
+export const getColor = (i: number, none: boolean = false) => {
+  // https://observablehq.com/@d3/color-schemes
+  const NONE_COLOR = "#bab0ab"
+  const COLORS = ["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f"]
+  if (none) return NONE_COLOR
+  return COLORS[i % COLORS.length]
+}
+
 interface PolicySecProps {
   sx?: SxProps
 }
@@ -18,15 +27,17 @@ export default function PolicySec({ sx }: PolicySecProps) {
   const policyConfigs = useRecoilValue(policyConfigsAtom)
   const [totalCost, setCost] = useState("0")
   const [fileSizeData, setFileSizeData] = useState<PieChartProps["series"][0]["data"]>([])
+  const [colors, setColors] = useState<string[]>([])
 
   useEffect(() => {
     const policyToSizeMap = calcSumFileSize(policyTree, policyConfigs)
     const cost = calcBackupTotalCost(policyTree, policyConfigs, policyToSizeMap)
-    setFileSizeData([NONE_POLICY_CONFIG, ...policyConfigs].map(config => ({
+    setFileSizeData([...policyConfigs, NONE_POLICY_CONFIG].map(config => ({
       id: config.id,
       label: `${config.label} (${humanReadableSize(policyToSizeMap[config.id])})`,
       value: policyToSizeMap[config.id]
     })))
+    setColors([...policyConfigs, NONE_POLICY_CONFIG].map((config, i) => getColor(i, config.id === NONE_POLICY_CONFIG.id)))
     setCost(cost.toFixed(2))
   }, [policyTree, policyConfigs])
 
@@ -48,8 +59,7 @@ export default function PolicySec({ sx }: PolicySecProps) {
           <Box>
             {policyTree.length !== 0 &&
               <PieChart
-                // https://observablehq.com/@d3/color-schemes
-                colors={["#bab0ab", "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f"]}
+                colors={colors}
                 series={[
                   {
                     data: fileSizeData,
