@@ -1,15 +1,17 @@
 #!/bin/bash
 
-# Usage: ./get_file_list.sh -d <depth> <file_path | dir_path> > output.jsonl
+# Usage: ./get_file_list.sh [-d depth] [-f] <file_path | dir_path> > output.jsonl
 
 set -u
 
 # Argument parsing
 depth=2
+with_file=false
 
 while getopts d: OPT; do
   case $OPT in
   d) depth=$OPTARG ;;
+  f) with_file=true ;;
   \?)
     echo "Usage: $0 [-d depth] <file_path | dir_path>"
     exit 1
@@ -20,7 +22,7 @@ done
 shift $((OPTIND - 1))
 
 if [[ $# -ne 1 ]]; then
-  echo "Usage: $0 [-d depth] <file_path | dir_path>"
+  echo "Usage: $0 [-d depth] [-f] <file_path | dir_path>"
   exit 1
 fi
 
@@ -34,6 +36,15 @@ fi
 
 # path, size, type を JSON lines 形式で出力
 find "$argPath" -maxdepth "$depth" | while read -r path; do
+  # Skip symlinks
+  if [[ -L "$path" ]]; then
+    continue
+  fi
+  # Skip files if -f option is not specified
+  if [[ "$with_file" == false && ! -d "$path" ]]; then
+    continue
+  fi
+
   realPath=$(realpath "$path")
   size=$(du --bytes --summarize "$realPath" | cut -f1)
   type=$([[ -d "$realPath" ]] && echo "directory" || echo "file")
