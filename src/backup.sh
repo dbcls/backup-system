@@ -105,6 +105,7 @@ function s3_backup() {
       --endpoint-url $endpoint_url \
       $DRYRUN_FLAG \
       --exact-timestamps \
+      --no-guess-mime-type \
       --delete \
       $path s3://$bucket_name/${path#/}
   elif [[ -f $path ]]; then
@@ -116,6 +117,7 @@ function s3_backup() {
       --endpoint-url $endpoint_url \
       $DRYRUN_FLAG \
       --exact-timestamps \
+      --no-guess-mime-type \
       --delete \
       $dir s3://$bucket_name/${dir#/}
   else
@@ -126,6 +128,9 @@ function s3_backup() {
 function do_backup() {
   export AWS_ACCESS_KEY_ID=$(echo $S3_CONFIG | jq -r '.accessKeyId')
   export AWS_SECRET_ACCESS_KEY=$(echo $S3_CONFIG | jq -r '.secretAccessKey')
+  export AWS_DEFAULT_ACL=none
+  export AWS_S3_CHECKSUM_MODE=none
+
   local http_proxy=$(echo $S3_CONFIG | jq -r '.httpProxy')
   if [[ $http_proxy != "" ]]; then
     export HTTP_PROXY=$http_proxy
@@ -135,12 +140,11 @@ function do_backup() {
   local create_bucket=$(echo $S3_CONFIG | jq -r '.createBucket')
 
   if [[ $create_bucket == "true" ]]; then
-    local exists=$(aws s3api head-bucket --bucket $bucket_name --endpoint-url $endpoint_url 2>&1 || true)
-    if [[ $exists == "" ]]; then
+    if aws s3api head-bucket --bucket "$bucket_name" --endpoint-url "$endpoint_url" >/dev/null 2>&1; then
       log "Bucket $bucket_name already exists, so skip create"
     else
       log "Create bucket: $bucket_name"
-      aws s3api create-bucket --bucket $bucket_name --endpoint-url $endpoint_url
+      aws s3api create-bucket --bucket "$bucket_name" --endpoint-url "$endpoint_url"
     fi
   fi
 
